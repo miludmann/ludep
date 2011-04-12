@@ -1,88 +1,69 @@
 package command;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+// RumbleDemo.java
 
-public class Tayste {
-	
-	// ATTRIBUTES
-	//-----------
-	
-	private String msg;
-	private String[] splitmsg;
-	
-	// CONSTRUCTORS
-	//-------------
-	
-	public Tayste(String s){
-		setMsg(s);
-		this.splitMessage();
-	}
-	
-	
+import ch.aplu.xboxcontroller.*;
+import javax.swing.JOptionPane;
 
-	// METHODS
-	//--------
-	
-	public void splitMessage(){
-		
-		String s = this.getMsg();
-		char prec = ' ';
-		int index = -1;
-		
-		ArrayList<String> res = new ArrayList<String>();
-		
-		for (int i = 0; i < s.length(); i++){
-			if( prec == ' ' ){
-				if( s.charAt(i) != ' '){
-					index = i;
-				}
-			}
-			else
-			{
-				if( s.charAt(i) == ' '){
-					res.add(s.substring(index, i));
-					index = -1;
-				}
-			}
-			prec = s.charAt(i);
-		}
-		
-		if( index != -1 ){
-			res.add(s.substring(index, s.length()));
-		}
-		
-		for (int i=0; i<res.size(); i++){
-			System.out.println(res.get(i));
-		}
-	}
-	
-	
-	// GETTERS - SETTERS
-	//------------------
-	
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
+public class Tayste
+{
+  private XboxController xc;
+  private int leftVibrate = 0; 
+  private int rightVibrate = 0; 
 
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setSplitmsg(String[] splitmsg) {
-		this.splitmsg = splitmsg;
-	}
-
-	public String[] getSplitmsg() {
-		return splitmsg;
-	}
-	
-	//! Main
-	public static void main(String[] args) throws IOException {
-
-		Tayste tt = new Tayste("   mou sdsdha hadddha   ");
-
+  public Tayste()
+  { 
+    xc = new XboxController();
+    
+    
+    if (!xc.isConnected())
+    {
+      JOptionPane.showMessageDialog(null, 
+        "Xbox controller not connected.",
+        "Fatal error", 
+        JOptionPane.ERROR_MESSAGE);
+      xc.release();
+      return;
     }
-
+    
+    
+    xc.addXboxControllerListener(new XboxControllerAdapter()
+    {
+      public void leftTrigger(double value)
+      {
+        leftVibrate = (int)(65535 * value * value);
+        xc.vibrate(leftVibrate, rightVibrate);
+      }
+      public void rightTrigger(double value)
+      {
+        rightVibrate = (int)(65535 * value * value);
+        xc.vibrate(leftVibrate, rightVibrate);
+      }
+      
+      public void leftThumbDirection(double direction) {
+    	  System.out.println((int) direction);
+      }
+      
+      public void leftThumbMagnitude(double magnitude) {
+    	  double tmp = magnitude*100;
+    	  System.out.println((int) tmp);
+      }
+      
+    });
+    
+    JOptionPane.showMessageDialog(null, 
+      "Xbox controller connected.\n" + 
+      "Press left or right trigger, Ok to quit.",
+        "RumbleDemo V1.0 (www.aplu.ch)", 
+        JOptionPane.PLAIN_MESSAGE);
+    
+    xc.release();
+    System.exit(0);
+    
+  }
+    
+  public static void main(String[] args)
+  {
+    new Tayste();
+  }
 }

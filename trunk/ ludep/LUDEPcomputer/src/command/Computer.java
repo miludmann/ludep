@@ -33,13 +33,14 @@ public class Computer {
 	public static void main(String[] args) throws IOException {
 		
 		Computer cmp = new Computer("Branson", "0016530DB4A2");
+		Controller xc = new Controller(cmp);
 		
 		InputStreamReader istream = new InputStreamReader(System.in) ;
 		BufferedReader bufRead = new BufferedReader(istream) ;
 		
 		String input = "";
 		
-		System.out.println("TU ÉCRIS");
+		System.out.println("You can test now");
 		
 		while(true){
 

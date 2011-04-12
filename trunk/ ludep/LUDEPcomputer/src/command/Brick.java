@@ -33,6 +33,15 @@ public class Brick implements MessageListenerInterface {
 
 	public void sendMessage(String s){
 		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
+		System.out.println(s);
+	}
+	
+	public void sendDirections(int angle, int power){
+		sendMessage("m " + angle + " " + power);
+	}
+	
+	public void sendRotation(int power){
+		sendMessage("r " + power);
 	}
 	
 	// GETTERS - SETTERS
