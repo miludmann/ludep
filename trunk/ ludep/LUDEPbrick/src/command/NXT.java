@@ -3,6 +3,7 @@ package command;
 import java.io.IOException;
 
 import lejos.nxt.Button;
+import lejos.nxt.MotorPort;
 import tools.MessageComputer;
 
 public class NXT{
@@ -21,7 +22,6 @@ public class NXT{
 	
 	// METHODS
 	//--------
-	
 	public void interpretMSG(String s){
 		
 		MessageComputer mc = new MessageComputer(s);
