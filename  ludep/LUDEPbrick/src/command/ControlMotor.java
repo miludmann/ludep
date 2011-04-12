@@ -1,7 +1,8 @@
 package command;
 
-import tools.MessageComputer;
+import lejos.nxt.Motor;
 import lejos.nxt.MotorPort;
+import tools.MessageComputer;
 
 
 public class ControlMotor {
@@ -11,7 +12,7 @@ public class ControlMotor {
 
 	private NXT nxt;
 	private int powerA, powerB, powerC;
-	private int modeA, modeB, modeC;
+	private int rotationPower, maxRotation;
 	
 	/*
 	* power - power from 0-100
@@ -24,94 +25,172 @@ public class ControlMotor {
 	public ControlMotor(NXT nxt){
 		setNxt(nxt);
 		
-		setModeA(3);
-		setModeB(3);
-		setModeC(3);
+		Motor.A.regulateSpeed(true);
+		Motor.B.regulateSpeed(true);
+		Motor.C.regulateSpeed(true);
 		
 		setPowerA(0);
 		setPowerB(0);
 		setPowerC(0);
+		
+		setRotationPower(0);
+		setMaxRotation(0);
 	}
 
 	// METHODS
 	//--------
 	
+	
+	public void angleMotors(int angle, int power){
+		
+		int halfDisk, relAngle, factorPower;
+		int powerA, powerB, powerC;
+		
+		powerA = 0;
+		powerB = 0;
+		powerC = 0;
+		
+		angle %= 360;
+		halfDisk = angle/180;
+		angle %= 180;
+						
+		if ( angle >= 0 && angle < 60 ){
+						
+			relAngle = angle;
+			factorPower = 10000*relAngle/60; 
+			
+			powerA += power*factorPower/10000;
+			powerB -= power;
+			powerC += power*(10000-factorPower)/10000;
+			
+		} else if ( angle >= 60 && angle < 120 ) {
+						
+			relAngle = angle - 60;
+			factorPower = 10000*relAngle/60;
+			
+			powerA += power;
+			powerB -= power*(10000-factorPower)/10000;
+			powerC -= power*factorPower/10000;
+			
+		} else if ( angle >= 120 && angle < 180 ) {
+					
+			relAngle = angle - 120;
+			factorPower = 10000*relAngle/60;
+						
+			powerA += power*(10000-factorPower)/10000;
+			powerB += power*factorPower/10000;
+			powerC -= power;
+		}
+		
+		if ( halfDisk == 1 ){
+			powerA *= -1;
+			powerB *= -1;
+			powerC *= -1;
+		}
+		
+		setPowerA(powerA);
+		setPowerB(powerB);
+		setPowerC(powerC);
+	}
+	
 	public void commandMotors(MessageComputer mc){
 		
-		String s0 = mc.getFragment(0);
+		int nbFrag = mc.nbFragments();
+		String si = null;
 		
-		if(mc.nbFragments() == 2){
+		for ( int i = 0; i < nbFrag; i++ )
+		{
+			si = mc.getFragment(i);
 			
-			int i1 = Integer.parseInt(mc.getFragment(1));
-						
-			if ( s0.indexOf("A") >= 0 )
-				motA(i1, 2);
-			
-			if ( s0.indexOf("B") >= 0 )
-				motB(i1, 2);
-			
-			if ( s0.indexOf("C") >= 0 )
-				motC(i1, 2);
-						
-			if ( s0.indexOf("a") >= 0 )
-				motA(i1, 1);
-			
-			if ( s0.indexOf("b") >= 0 )
-				motB(i1, 1);
-			
-			if ( s0.indexOf("c") >= 0 )
-				motC(i1, 1);
-		}
-		
-		if(mc.nbFragments() == 1){
+			if ( si.equalsIgnoreCase("m") && (nbFrag > i+2) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				int i2 = Integer.parseInt(mc.getFragment(i+2));
 				
-			if ( s0.equalsIgnoreCase("s") ){
-				motA(0, 3);
-				motB(0, 3);
-				motC(0, 3);
+				angleMotors(i1, i2);
 			}
 			
-			if ( s0.equalsIgnoreCase("f") ){
-				motA(0, 4);
-				motB(0, 4);
-				motC(0, 4);
+			if ( si.indexOf("r") >= 0  && (nbFrag > i+1) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				setRotationPower(i1);
+			}	
+			
+			if ( si.indexOf("a") >= 0  && (nbFrag > i+1) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				setPowerA(i1);
 			}
 			
+			if ( si.indexOf("b") >= 0  && (nbFrag > i+1) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				setPowerB(i1);
+			}
+			
+			if ( si.indexOf("c") >= 0  && (nbFrag > i+1) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				setPowerC(i1);
+			}
 
+			if ( si.equalsIgnoreCase("s") )
+			{
+				setPowerA(0);
+				setPowerB(0);
+				setPowerC(0);
+				stopMotors("abc", 3);
+			}
+			
+			if ( si.equalsIgnoreCase("f") )
+			{
+				setPowerA(0);
+				setPowerB(0);
+				setPowerC(0);
+				stopMotors("abc", 4);
+			}	
 		}
+		refreshMotors("abc");
 	}
 	
-	public void motA(int power, int mode){
-		setPowerA(power);
-		setModeA(mode);
-		refreshA();	
+	public void refreshMotors(String s)
+	{
+		int rot = getRotationPower();
+		
+		int pa = getPowerA()+rot;
+		int pb = getPowerB()+rot;
+		int pc = getPowerC()+rot;
+		
+		int maxp = Math.max(Math.max(Math.abs(pa), Math.abs(pb)), Math.abs(pc));
+		
+		if ( maxp > 100 )
+		{
+			pa = 100*pa/maxp;
+			pb = 100*pb/maxp;
+			pc = 100*pc/maxp;
+		}
+		
+		if ( s.indexOf("a")>=0 )
+			MotorPort.A.controlMotor(pa, 1);
+		
+		if ( s.indexOf("b")>=0 )
+			MotorPort.B.controlMotor(pb, 1);
+		
+		if ( s.indexOf("c")>=0 )
+			MotorPort.C.controlMotor(pc, 1);
 	}
 
-	public void motB(int power, int mode){
-		setPowerB(power);
-		setModeB(mode);
-		refreshB();
+	public void stopMotors(String s, int floating)
+	{
+		if ( s.indexOf("a")>=0 )
+			MotorPort.A.controlMotor(0, floating);
+		
+		if ( s.indexOf("b")>=0 )
+			MotorPort.B.controlMotor(0, floating);
+		
+		if ( s.indexOf("c")>=0 )
+			MotorPort.C.controlMotor(0, floating);
 	}
-
-	public void motC(int power, int mode){
-		setPowerC(power);
-		setModeC(mode);
-		refreshC();
-	}
-	
-	public void refreshA(){
-		MotorPort.A.controlMotor(getPowerA(), getModeA());
-	}
-
-	public void refreshB(){
-		MotorPort.B.controlMotor(getPowerB(), getModeB());
-	}
-
-	public void refreshC(){
-		MotorPort.C.controlMotor(getPowerC(), getModeC());
-	}
-
-	
 	
 	// GETTERS - SETTERS
 	//------------------
@@ -148,27 +227,19 @@ public class ControlMotor {
 		this.powerC = powerC;
 	}
 
-	public int getModeA() {
-		return modeA;
+	public int getRotationPower() {
+		return rotationPower;
 	}
 
-	public void setModeA(int modeA) {
-		this.modeA = modeA;
+	public void setRotationPower(int rotation) {
+		this.rotationPower = rotation;
 	}
 
-	public int getModeB() {
-		return modeB;
+	public int getMaxRotation() {
+		return maxRotation;
 	}
 
-	public void setModeB(int modeB) {
-		this.modeB = modeB;
-	}
-
-	public int getModeC() {
-		return modeC;
-	}
-
-	public void setModeC(int modeC) {
-		this.modeC = modeC;
+	public void setMaxRotation(int maxRotation) {
+		this.maxRotation = maxRotation;
 	}
 }
