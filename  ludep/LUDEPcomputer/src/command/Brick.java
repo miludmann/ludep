@@ -28,12 +28,12 @@ public class Brick implements MessageListenerInterface {
 	//--------
 	@Override
 	public void recievedNewMessage(LIMessage msg) {
-		System.out.println("The Brick just sent: " + msg.getPayload());		
+		System.out.println("The brick sent_ " + msg.getPayload());		
 	}
 
 	public void sendMessage(String s){
 		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
-		System.out.println(s);
+		//System.out.println(s);
 	}
 	
 	public void sendDirections(int angle, int power){
@@ -42,6 +42,12 @@ public class Brick implements MessageListenerInterface {
 	
 	public void sendRotation(int power){
 		sendMessage("r " + power);
+	}
+	
+	public void sendCommand(int angle, int power, int pRot){
+		sendMessage("x " + angle
+				   + " " + power
+				   + " " + pRot);
 	}
 	
 	// GETTERS - SETTERS

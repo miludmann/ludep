@@ -40,7 +40,7 @@ public class Computer {
 		
 		String input = "";
 		
-		System.out.println("You can test now");
+		System.out.println("You can play now...");
 		
 		while(true){
 
