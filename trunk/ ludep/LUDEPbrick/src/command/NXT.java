@@ -3,7 +3,8 @@ package command;
 import java.io.IOException;
 
 import lejos.nxt.Button;
-import lejos.nxt.MotorPort;
+import lejos.nxt.SensorPort;
+import lejos.nxt.addon.CompassSensor;
 import tools.MessageComputer;
 
 public class NXT{
@@ -12,12 +13,16 @@ public class NXT{
 	//-----------
 	private ComputerLink cl;
 	private ControlMotor cm;
+	private boolean isCalibrating;
+	private boolean isRunning;
 	
 	// CONSTRUCTORS
 	//-------------
 	public NXT(){
 		setCl(new ComputerLink(this));
 		setCm(new ControlMotor(this));
+		setCalibrating(false);
+		setRunning(true);
 	}
 	
 	// METHODS
@@ -25,6 +30,15 @@ public class NXT{
 	public void interpretMSG(String s){
 		
 		MessageComputer mc = new MessageComputer(s);
+		
+		if ( mc.getFragment(0).equalsIgnoreCase("cal") )
+		{
+			setCalibrating(!this.isCalibrating());
+		} else if ( mc.getFragment(0).equalsIgnoreCase("stop") ) {
+			setCalibrating(!this.isCalibrating());
+			setRunning(false);
+		}
+		
 		getCm().commandMotors(mc);
 
 	}
@@ -47,14 +61,53 @@ public class NXT{
 		return cm;
 	}
 	
+	public boolean isCalibrating() {
+		return isCalibrating;
+	}
+
+	public void setCalibrating(boolean isCalibrating) {
+		this.isCalibrating = isCalibrating;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+	
+	public void calibrateCompass(CompassSensor cs)
+	{
+		getCl().sendMessage("Calibration started...");
+		cs.startCalibration();
+		
+		while(!Button.ENTER.isPressed()
+				&& isCalibrating()
+				&& isRunning()){}
+		
+		cs.stopCalibration();
+		getCl().sendMessage("Calibration finished...");
+	}
+
 	// MAIN
 	//-----
 	public static void main(String[] args) throws IOException {
 		
 		NXT brick = new NXT();
-				
-		while(!Button.ESCAPE.isPressed()){
+		int tmp = 0;
 		
+		CompassSensor cs = new CompassSensor(SensorPort.S2);
+		
+		
+		while(!Button.ESCAPE.isPressed() && brick.isRunning()){
+			
+			if ( brick.isCalibrating() )
+				brick.calibrateCompass(cs);
+			
+			tmp = (int) cs.getDegreesCartesian();
+			
+			brick.getCm().setCompassAngle(tmp);
 		}
 	}
 

@@ -11,8 +11,12 @@ public class ControlMotor {
 	//-----------
 
 	private NXT nxt;
+	
 	private int powerA, powerB, powerC;
-	private int rotationPower, maxRotation;
+	private int rotationPower;
+	private int compassAngle;
+	private int refAngle;
+	private boolean isCompassActivated;
 	
 	/*
 	* power - power from 0-100
@@ -34,7 +38,9 @@ public class ControlMotor {
 		setPowerC(0);
 		
 		setRotationPower(0);
-		setMaxRotation(0);
+		setCompassAngle(0);
+		setRefAngle(0);
+		setCompassActivated(false);
 	}
 
 	// METHODS
@@ -49,6 +55,9 @@ public class ControlMotor {
 		powerA = 0;
 		powerB = 0;
 		powerC = 0;
+		
+		if ( isCompassActivated() )
+			angle += getCompassAngle() + 360 - getRefAngle();
 		
 		angle %= 360;
 		halfDisk = angle/180;
@@ -114,6 +123,15 @@ public class ControlMotor {
 			{
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				setRotationPower(i1);
+			}
+			
+			if ( si.equalsIgnoreCase("x") && (nbFrag > i+3) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				int i2 = Integer.parseInt(mc.getFragment(i+2));
+				int i3 = Integer.parseInt(mc.getFragment(i+3));
+				angleMotors(i1, i2);
+				setRotationPower(i3);
 			}	
 			
 			if ( si.indexOf("a") >= 0  && (nbFrag > i+1) )
@@ -133,23 +151,28 @@ public class ControlMotor {
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				setPowerC(i1);
 			}
+			
+			if ( si.equalsIgnoreCase("comp") )
+			{
+				setCompassActivated(!isCompassActivated());
+				getNxt().getCl().sendMessage("Compass Use: " + isCompassActivated());
+			}
+			
+			if ( si.equalsIgnoreCase("ref") )
+			{
+				setRefAngle(getCompassAngle());
+				getNxt().getCl().sendMessage("New ref angle: " + getRefAngle());
+			}
 
 			if ( si.equalsIgnoreCase("s") )
 			{
 				setPowerA(0);
 				setPowerB(0);
 				setPowerC(0);
-				stopMotors("abc", 3);
+				setRotationPower(0);
 			}
-			
-			if ( si.equalsIgnoreCase("f") )
-			{
-				setPowerA(0);
-				setPowerB(0);
-				setPowerC(0);
-				stopMotors("abc", 4);
-			}	
 		}
+		
 		refreshMotors("abc");
 	}
 	
@@ -179,30 +202,18 @@ public class ControlMotor {
 		if ( s.indexOf("c")>=0 )
 			MotorPort.C.controlMotor(pc, 1);
 	}
-
-	public void stopMotors(String s, int floating)
-	{
-		if ( s.indexOf("a")>=0 )
-			MotorPort.A.controlMotor(0, floating);
-		
-		if ( s.indexOf("b")>=0 )
-			MotorPort.B.controlMotor(0, floating);
-		
-		if ( s.indexOf("c")>=0 )
-			MotorPort.C.controlMotor(0, floating);
-	}
 	
 	// GETTERS - SETTERS
 	//------------------
-	
-	public void setNxt(NXT nxt) {
-		this.nxt = nxt;
-	}
 
 	public NXT getNxt() {
 		return nxt;
 	}
-	
+
+	public void setNxt(NXT nxt) {
+		this.nxt = nxt;
+	}
+
 	public int getPowerA() {
 		return powerA;
 	}
@@ -231,15 +242,31 @@ public class ControlMotor {
 		return rotationPower;
 	}
 
-	public void setRotationPower(int rotation) {
-		this.rotationPower = rotation;
+	public void setRotationPower(int rotationPower) {
+		this.rotationPower = rotationPower;
 	}
 
-	public int getMaxRotation() {
-		return maxRotation;
+	public int getCompassAngle() {
+		return compassAngle;
 	}
 
-	public void setMaxRotation(int maxRotation) {
-		this.maxRotation = maxRotation;
+	public void setCompassAngle(int compassAngle) {
+		this.compassAngle = compassAngle;
+	}
+
+	public int getRefAngle() {
+		return refAngle;
+	}
+
+	public void setRefAngle(int refAngle) {
+		this.refAngle = refAngle;
+	}
+
+	public boolean isCompassActivated() {
+		return isCompassActivated;
+	}
+
+	public void setCompassActivated(boolean isCompassActivated) {
+		this.isCompassActivated = isCompassActivated;
 	}
 }
