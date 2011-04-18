@@ -18,6 +18,7 @@ public class Controller{
 		setComp(c);
 		setXc(new XboxController());
 		setController();
+		
 	}
 	
 	// METHODS
@@ -51,6 +52,27 @@ public class Controller{
 
 			public void rightThumbMagnitude(double magnitude) {
 				controlRightMagnitude(100*magnitude);
+			}
+			
+			public void buttonA(boolean pressed){
+				if ( pressed )
+					getComp().getBrick().sendMessage("cal");
+			}
+			
+			public void buttonB(boolean pressed){
+				if ( pressed )
+					getComp().getBrick().sendMessage("stop");
+			}
+			
+			public void buttonX(boolean pressed){
+				if ( pressed )
+					getComp().getBrick().sendMessage("ref");
+			}
+			
+			public void buttonY(boolean pressed){
+				if ( pressed )
+					getComp().getBrick().sendMessage("comp");
+				// activate/deactivate compass
 			}
 		});
 	}
@@ -111,15 +133,10 @@ public class Controller{
 	
 	
 	public void refreshDrivingParameters(){
-		if ( getLeftMagnitude() != 0 )
-		{
-			getComp().getBrick().sendDirections((int) getLeftDirection(), (int) getLeftMagnitude());
+		getComp().getBrick().sendCommand((int) getLeftDirection(),
+				 (int) getLeftMagnitude(),
+				 (int) (getRightMagnitude()*Math.cos(2*Math.PI/360*(450-getRightDirection())%360)));
 		}
-		if ( getRightMagnitude() != 0 )
-		{
-			getComp().getBrick().sendRotation((int) (getRightMagnitude()*Math.cos(2*Math.PI/360*(450-getRightDirection())%360)));
-		}
-	}
 	
 	public void inDeadZoneLeft(){
 		if ( getLeftMagnitude() != 0 )
