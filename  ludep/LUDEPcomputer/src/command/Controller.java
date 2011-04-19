@@ -9,6 +9,8 @@ public class Controller{
 	//-----------
 	private Computer comp;
 	private XboxController xc;
+	private CommandsRegulator cr;
+
 	private double leftDirection, rightDirection;
 	private double leftMagnitude, rightMagnitude;
 	
@@ -19,6 +21,8 @@ public class Controller{
 		setXc(new XboxController());
 		setController();
 		
+		setCr(new CommandsRegulator(this));
+		getCr().start();
 	}
 	
 	// METHODS
@@ -36,22 +40,28 @@ public class Controller{
 			return;
 		}
 		
+		
 		xc.addXboxControllerListener(new XboxControllerAdapter()
 		{
 			public void leftThumbDirection(double direction) {
-				controlLeftDirection(direction);
+				if ( joyDistance(direction, getLeftDirection()) > 10 ) 
+					controlLeftDirection(direction);
+								
 			}
 
 			public void leftThumbMagnitude(double magnitude) {
-				controlLeftMagnitude(100*magnitude);
+				if ( joyDistance(100*magnitude, getLeftMagnitude()) > 5 ) 
+					controlLeftMagnitude(100*magnitude);
 			}
 			
 			public void rightThumbDirection(double direction) {
-				controlRightDirection(direction);
+				if ( joyDistance(direction, getRightDirection()) > 10 ) 
+					controlRightDirection(direction);
 			}
 
 			public void rightThumbMagnitude(double magnitude) {
-				controlRightMagnitude(100*magnitude);
+				if ( joyDistance(100*magnitude, getRightMagnitude()) > 5 ) 
+					controlRightMagnitude(100*magnitude);
 			}
 			
 			public void buttonA(boolean pressed){
@@ -77,12 +87,21 @@ public class Controller{
 		});
 	}
 	
+	
+	public double joyDistance(double a, double b){
+		return Math.abs(a-b);
+	}
+	
+	/*
 	public void controlLeftMagnitude(double m){
 		double tmp = Math.abs(m - getLeftMagnitude());
 		
 		if ( m <= 25 ){
-			inDeadZoneLeft();
-			setLeftMagnitude(0);
+			if ( getLeftMagnitude() != 0 )
+			{
+				inDeadZoneLeft();
+				setLeftMagnitude(0);				
+			}
 		}
 		else
 		{
@@ -93,7 +112,21 @@ public class Controller{
 			}
 		}
 	}
+	*/
+	public void controlLeftMagnitude(double m){
+		
+		if ( m <= 25 ){
+			setLeftMagnitude(0);				
+		}
+		else
+		{
+			setLeftMagnitude(4*(m-25)/3);
+		}
+		
+		refreshDrivingParameters();
+	}
 	
+	/*
 	public void controlLeftDirection(double d){
 		double tmp = Math.abs(d-getLeftDirection());
 		
@@ -103,13 +136,23 @@ public class Controller{
 			refreshDrivingParameters();
 		}
 	}
+	*/
+	public void controlLeftDirection(double d){
+
+		setLeftDirection(d);
+		refreshDrivingParameters();
+	}
 	
+	/*
 	public void controlRightMagnitude(double m){
 		double tmp = Math.abs(m - getRightMagnitude());
 		
 		if ( m <= 25 ){
-			inDeadZoneRight();
-			setRightMagnitude(0);
+			if ( getRightMagnitude() != 0 )
+			{
+				inDeadZoneRight();
+				setRightMagnitude(0);				
+			}
 		}
 		else
 		{
@@ -120,7 +163,22 @@ public class Controller{
 			}
 		}
 	}
+	*/
 	
+	public void controlRightMagnitude(double m){
+		
+		if ( m <= 25 ){
+			setRightMagnitude(0);				
+		}
+		else
+		{
+			setRightMagnitude(4*(m-25)/3);
+		}
+		
+		refreshDrivingParameters();
+	}
+	
+	/*
 	public void controlRightDirection(double d){
 		double tmp = Math.abs(d-getRightDirection());
 		
@@ -130,14 +188,15 @@ public class Controller{
 			refreshDrivingParameters();
 		}
 	}
+	*/
 	
+	public void controlRightDirection(double d){
+
+		setRightDirection(d);
+		refreshDrivingParameters();
+	}
 	
-	public void refreshDrivingParameters(){
-		getComp().getBrick().sendCommand((int) getLeftDirection(),
-				 (int) getLeftMagnitude(),
-				 (int) (getRightMagnitude()*Math.cos(2*Math.PI/360*(450-getRightDirection())%360)));
-		}
-	
+	/*
 	public void inDeadZoneLeft(){
 		if ( getLeftMagnitude() != 0 )
 		{
@@ -151,7 +210,19 @@ public class Controller{
 			getComp().getBrick().sendRotation(0);
 		}
 	}
+	*/
 	
+	public void refreshDrivingParameters(){
+		/*
+		getComp().getBrick().sendCommand((int) getLeftDirection(),
+				 (int) getLeftMagnitude(),
+				 (int) (getRightMagnitude()*Math.cos(2*Math.PI/360*(450-getRightDirection())%360)));
+		*/
+		
+		getCr().refreshData((int) getLeftDirection(),
+				 (int) getLeftMagnitude(),
+				 (int) (getRightMagnitude()*Math.cos(2*Math.PI/360*(450-getRightDirection())%360)));
+	}
 	
 	// GETTERS - SETTERS
 	//------------------
@@ -201,5 +272,13 @@ public class Controller{
 
 	public void setRightMagnitude(double rightMagnitude) {
 		this.rightMagnitude = rightMagnitude;
+	}
+
+	public void setCr(CommandsRegulator cr) {
+		this.cr = cr;
+	}
+
+	public CommandsRegulator getCr() {
+		return cr;
 	}
 }
