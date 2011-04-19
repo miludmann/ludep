@@ -172,7 +172,6 @@ public class ControlMotor {
 				setRotationPower(0);
 			}
 		}
-		
 		refreshMotors("abc");
 	}
 	

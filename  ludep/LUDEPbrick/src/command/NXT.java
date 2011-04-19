@@ -98,8 +98,7 @@ public class NXT{
 		int tmp = 0;
 		
 		CompassSensor cs = new CompassSensor(SensorPort.S2);
-		
-		
+				
 		while(!Button.ESCAPE.isPressed() && brick.isRunning()){
 			
 			if ( brick.isCalibrating() )
