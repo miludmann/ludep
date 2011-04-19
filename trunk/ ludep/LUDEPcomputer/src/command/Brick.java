@@ -33,7 +33,7 @@ public class Brick implements MessageListenerInterface {
 
 	public void sendMessage(String s){
 		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
-		//System.out.println(s);
+		System.out.println(s);
 	}
 	
 	public void sendDirections(int angle, int power){
