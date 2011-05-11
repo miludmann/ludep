@@ -35,12 +35,11 @@ public class NXT{
 		{
 			setCalibrating(!this.isCalibrating());
 		} else if ( mc.getFragment(0).equalsIgnoreCase("stop") ) {
-			setCalibrating(!this.isCalibrating());
+			setCalibrating(false);
 			setRunning(false);
 		}
 		
 		getCm().commandMotors(mc);
-
 	}
 	
 	// GETTERS - SETTERS
@@ -79,15 +78,18 @@ public class NXT{
 	
 	public void calibrateCompass(CompassSensor cs)
 	{
-		getCl().sendMessage("Calibration started...");
-		cs.startCalibration();
-		
-		while(!Button.ENTER.isPressed()
-				&& isCalibrating()
-				&& isRunning()){}
-		
-		cs.stopCalibration();
-		getCl().sendMessage("Calibration finished...");
+		if ( this.getCm().isCompassActivated() )
+		{
+			getCl().sendMessage("Calibration started...");
+			cs.startCalibration();
+			
+			while(!Button.ENTER.isPressed()
+					&& isCalibrating()
+					&& isRunning()){}
+			
+			cs.stopCalibration();
+			getCl().sendMessage("Calibration finished...");
+		}
 	}
 
 	// MAIN
@@ -103,7 +105,7 @@ public class NXT{
 			
 			if ( brick.isCalibrating() )
 				brick.calibrateCompass(cs);
-			
+									
 			tmp = (int) cs.getDegreesCartesian();
 			
 			brick.getCm().setCompassAngle(tmp);
