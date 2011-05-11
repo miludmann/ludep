@@ -4,28 +4,54 @@ import lejos.nxt.Motor;
 import lejos.nxt.MotorPort;
 import tools.MessageComputer;
 
-
+/**
+ * The class in charge to be in control of the motors.
+ * Receives direction commands;
+ * Allocate the right power for each motor.
+ */
 public class ControlMotor {
 	
 	// ATTRIBUTES
 	//-----------
 
+	/**
+	 * Pointer for the NXT
+	 */
 	private NXT nxt;
-	
+	/**
+	 * Power used for the motors
+	 */
 	private int powerA, powerB, powerC;
+	/**
+	 * Rotation added by the user besides the direction
+	 */
 	private int rotationPower;
+	/**
+	 * Angle sampled by the compass
+	 */
 	private int compassAngle;
+	/**
+	 * Angle used as a reference by the compass
+	 */
 	private int refAngle;
+	/**
+	 * Activation status of the compass
+	 */
 	private boolean isCompassActivated;
+	/**
+	 * Change the orientation of the angles
+	 * (clockwise or counterclockwise)
+	 */
+	private boolean invertedMotors;
+
 	
-	/*
-	* power - power from 0-100
-	* mode - 1=forward, 2=backward, 3=stop, 4=float
-	*/
 	
 	// CONSTRUCTORS
 	//-------------
-
+	/**
+	 * Constructor of the class
+	 * @param nxt The next the motors are linked to
+	 */
 	public ControlMotor(NXT nxt){
 		setNxt(nxt);
 		
@@ -41,12 +67,17 @@ public class ControlMotor {
 		setCompassAngle(0);
 		setRefAngle(0);
 		setCompassActivated(false);
+		setInvertedMotors(true);
 	}
 
 	// METHODS
 	//--------
-	
-	
+	/**
+	 * Settles the power for each different motors 
+	 * so as to move the bot within the right direction
+	 * @param angle angle you want to move the bot
+	 * @param power power desired for the bot's movement
+	 */
 	public void angleMotors(int angle, int power){
 		
 		int halfDisk, relAngle, factorPower;
@@ -55,6 +86,9 @@ public class ControlMotor {
 		powerA = 0;
 		powerB = 0;
 		powerC = 0;
+		
+		if ( isInvertedMotors() )
+			angle = 180-angle;
 		
 		if ( isCompassActivated() )
 			angle += getCompassAngle() + 360 - getRefAngle();
@@ -102,6 +136,11 @@ public class ControlMotor {
 		setPowerC(powerC);
 	}
 	
+	/**
+	 * The function that take a message from the computer
+	 * and analyse it so as to command the motors
+	 * @param mc the message incoming from the computer
+	 */
 	public void commandMotors(MessageComputer mc){
 		
 		int nbFrag = mc.nbFragments();
@@ -110,6 +149,14 @@ public class ControlMotor {
 		for ( int i = 0; i < nbFrag; i++ )
 		{
 			si = mc.getFragment(i);
+			
+			if ( si.equalsIgnoreCase("g") && (nbFrag > i+2) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				int i2 = Integer.parseInt(mc.getFragment(i+2));
+				
+				relativeMove(i1, i2);
+			}
 			
 			if ( si.equalsIgnoreCase("m") && (nbFrag > i+2) )
 			{
@@ -171,11 +218,62 @@ public class ControlMotor {
 				setPowerC(0);
 				setRotationPower(0);
 			}
+			
+			if ( si.equalsIgnoreCase("test") )
+			{
+				
+			}
 		}
-		refreshMotors("abc");
+		
+		refreshMotors();
+		
+		int mota, motb, motc;
+		
+		mota = Motor.A.getTachoCount();
+		motb = Motor.B.getTachoCount();
+		motc = Motor.C.getTachoCount();
+		
+		this.getNxt().getCl().sendMessage("MOT " + mota + " " + motb + " " + motc);
+		
 	}
 	
-	public void refreshMotors(String s)
+	
+	/**
+	 * Test function
+	 * Call it by sending the string "test" to the brick
+	 */
+	public void test()
+	{
+		
+	}
+	
+	/**
+	 * Relative movement with angle and direction
+	 * @param angle
+	 * @param distance
+	 */
+	public void relativeMove(int angle, int distance)
+	{
+		int refmota, refmotb, refmotc;
+		int mota, motb, motc;
+		
+		refmota = Motor.A.getTachoCount();
+		refmotb = Motor.B.getTachoCount();
+		refmotc = Motor.C.getTachoCount();
+		
+		while ( true )
+		{
+			mota = Motor.A.getTachoCount();
+			motb = Motor.B.getTachoCount();
+			motc = Motor.C.getTachoCount();
+		}
+	}
+		
+	
+	/**
+	 * Refresh the parameters given to the motors
+	 */
+	public void refreshMotors()
 	{
 		int rot = getRotationPower();
 		
@@ -192,14 +290,9 @@ public class ControlMotor {
 			pc = 100*pc/maxp;
 		}
 		
-		if ( s.indexOf("a")>=0 )
-			MotorPort.A.controlMotor(pa, 1);
-		
-		if ( s.indexOf("b")>=0 )
-			MotorPort.B.controlMotor(pb, 1);
-		
-		if ( s.indexOf("c")>=0 )
-			MotorPort.C.controlMotor(pc, 1);
+		MotorPort.A.controlMotor(pa, 1);
+		MotorPort.B.controlMotor(pb, 1);
+		MotorPort.C.controlMotor(pc, 1);
 	}
 	
 	// GETTERS - SETTERS
@@ -267,5 +360,13 @@ public class ControlMotor {
 
 	public void setCompassActivated(boolean isCompassActivated) {
 		this.isCompassActivated = isCompassActivated;
+	}
+
+	public void setInvertedMotors(boolean invertedMotors) {
+		this.invertedMotors = invertedMotors;
+	}
+
+	public boolean isInvertedMotors() {
+		return invertedMotors;
 	}
 }
