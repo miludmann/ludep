@@ -221,7 +221,7 @@ public class ControlMotor {
 			
 			if ( si.equalsIgnoreCase("test") )
 			{
-				
+				test();
 			}
 		}
 		
@@ -244,7 +244,7 @@ public class ControlMotor {
 	 */
 	public void test()
 	{
-		
+		this.getNxt().getCl().sendMessage("Test running");
 	}
 	
 	/**
