@@ -37,13 +37,18 @@ public class CommandsRegulator extends Thread {
 	
 	public void sendDrivingDirections(){
 		getCont().getComp().getBrick().sendCommand(getDir(), getMagn(), getRot());
+		
+		getCont().getComp().getVb().getJl1().setText(Integer.toString(getDir()));
+		getCont().getComp().getVb().getJl2().setText(Integer.toString(getMagn()));
+		getCont().getComp().getVb().getJl3().setText(Integer.toString(getRot()));
+
 		archiveData();
 	}
 
 	public void refreshData(int leftDir, int leftMagn, int rightRot) {
 		setDir(leftDir);
 		setMagn(leftMagn);
-		setRot(rightRot);
+		setRot(rightRot);		
 	}
 	
 	public void archiveData(){
