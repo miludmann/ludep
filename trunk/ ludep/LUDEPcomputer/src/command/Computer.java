@@ -13,10 +13,12 @@ public class Computer {
 	 */
 	public Brick brick;
 	
+	public ValueBoard vb;
+	
 
 	//! Constructor
 	public Computer(String name, String addr){
-		setBrick(new Brick(name, addr));
+		setBrick(new Brick(this, name, addr));
 	}
 	
 	//! Setter brick
@@ -28,12 +30,22 @@ public class Computer {
 	public Brick getBrick() {
 		return brick;
 	}
+	
+	public ValueBoard getVb() {
+		return vb;
+	}
+
+	public void setVb(ValueBoard vb) {
+		this.vb = vb;
+	}
 
 	//! Main
 	public static void main(String[] args) throws IOException {
 		
 		Computer cmp = new Computer("Branson", "0016530DB4A2");
 		Controller xc = new Controller(cmp);
+		
+		cmp.setVb(new ValueBoard()); 
 		
 		InputStreamReader istream = new InputStreamReader(System.in) ;
 		BufferedReader bufRead = new BufferedReader(istream) ;
