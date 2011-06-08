@@ -29,8 +29,7 @@ public class ComputerLink implements MessageListenerInterface{
 
 	// METHODS
 	//--------
-	@Override
-	public void recievedNewMessage(LIMessage msg) {
+	public void receivedNewMessage(LIMessage msg) {
 		getNxt().interpretMSG(msg.getPayload());
 	}
 

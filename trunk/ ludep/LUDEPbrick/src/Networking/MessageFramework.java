@@ -69,7 +69,7 @@ public class MessageFramework {
                 		
                 		//Check if this is a packet frame end <ETX>
                     	if(input == (byte)3) //ETX
-                    		RecievedNewPacket();
+                    		ReceivedNewPacket();
                 	}
                 	else
                 	{
@@ -86,7 +86,7 @@ public class MessageFramework {
         }
     }
 	    
-    private void RecievedNewPacket()
+    private void ReceivedNewPacket()
     {
     	byte[] msgBytes = new byte[m_receivedBytes.size()];
     	for(int i=0; i<m_receivedBytes.size(); i++)
@@ -103,7 +103,7 @@ public class MessageFramework {
     			LIMessage msg = LIMessage.setEncodedMsg(msgBytes);
 				for(int j=0; j<m_messageListeners.size(); j++)
 				{
-		    		m_messageListeners.get(j).recievedNewMessage(msg);
+		    		m_messageListeners.get(j).receivedNewMessage(msg);
 				}
     		}
     	}
