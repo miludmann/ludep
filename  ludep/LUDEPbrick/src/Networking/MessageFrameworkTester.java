@@ -46,7 +46,7 @@ public class MessageFrameworkTester implements MessageListenerInterface {
 	}
 
 	@Override
-	public void recievedNewMessage(LIMessage msg) {
+	public void receivedNewMessage(LIMessage msg) {
 		
 		LCD.drawString(msg.m_payload, 0, 0);
 		LCD.drawString("length: " + msg.m_payload.length(), 0, 1);
