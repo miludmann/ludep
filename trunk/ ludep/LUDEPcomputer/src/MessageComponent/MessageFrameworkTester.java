@@ -161,7 +161,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
 	}
 
 	@Override
-	public void recievedNewMessage(LIMessage msg) {
+	public void receivedNewMessage(LIMessage msg) {
 		System.out.println("Recieved: " + new String(msg.getEncodedMsg()) );		
 	}	
 }
