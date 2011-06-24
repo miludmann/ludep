@@ -9,17 +9,17 @@ public class NXT{
 	
 	// ATTRIBUTES
 	//-----------
+	private int id;
 	private ComputerLink cl;
-	private ControlMotor cm;
 	private Interpretator interp;
 	private boolean isRunning;
 	
 	// CONSTRUCTORS
 	//-------------
 	public NXT(){
+		setId(-1);
 		setCl(new ComputerLink(this));
-		setCm(new ControlMotor(this));
-		setInterp(new Interpretator(getCm()));
+		setInterp(new Interpretator(this));
 		setRunning(true);
 	}
 	
@@ -28,6 +28,11 @@ public class NXT{
 	public void interpretMSG(String s){
 				
 		MessageComputer mc = new MessageComputer(s);
+		
+		if ( mc.getFragment(0).equalsIgnoreCase("ID") && getId() < 0 ) {
+			setId(Integer.parseInt(mc.getFragment(1)));
+			getCl().sendMessage("ID " + getId());
+		}
 		
 		if ( mc.getFragment(0).equalsIgnoreCase("stop") ) {
 			setRunning(false);
@@ -44,14 +49,6 @@ public class NXT{
 
 	public ComputerLink getCl() {
 		return cl;
-	}
-
-	public void setCm(ControlMotor cm) {
-		this.cm = cm;
-	}
-
-	public ControlMotor getCm() {
-		return cm;
 	}
 
 	public boolean isRunning() {
@@ -80,5 +77,13 @@ public class NXT{
 		}
 		
 		System.exit(1);
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
 	}
 }
