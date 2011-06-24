@@ -140,7 +140,7 @@ public class MessageFramework {
 	    		LIMessage msg = LIMessage.setEncodedMsg(msgBytes);
 	    		for(int j=0; j<m_messageListeners.size(); j++)
 	    		{
-		    			m_messageListeners.get(j).recievedNewMessage(msg);
+		    			m_messageListeners.get(j).receivedNewMessage(msg);
 	    		}
     		}
     	}

@@ -11,42 +11,65 @@ public class Brick implements MessageListenerInterface {
 	
 	// ATTRIBUTES
 	//-----------
+	
+	private String name;
+	private String address;
 	private MessageFramework mF;
 	private NXTInfo m_info;
 	private Computer cmp;
+	private boolean connectionEstablished;
+	private int id;
 	
 	// CONSTRUCTORS
 	//-------------
 	public Brick(Computer c, String name, String macAddress){
 		
+		setName(name);
+		setAddress(macAddress);
+		
 		setCmp(c);
 		setM_info(new NXTInfo(NXTCommFactory.BLUETOOTH, name, macAddress));
 		setmF(new MessageFramework());
 		getmF().addMessageListener(this);
-		getmF().ConnectToNXT(m_info);
+		setConnectionEstablished(getmF().ConnectToNXT(m_info));
+		setId(-1);
+		
+		if ( isConnectionEstablished() )
+			idProcess();
 	}
 
 	// METHODS
 	//--------
-	@Override
-	public void recievedNewMessage(LIMessage msg) {
-		System.out.println("The brick sent_ " + msg.getPayload());
-		String[] splitmsg = msg.getPayload().split(" ");
+	public void idProcess(){
+		sendMessage("ID " + getCmp().getBrickList().size());
 		
-		if ( splitmsg.length == 4 && splitmsg[0].equals("MOT"))
+		long time = System.currentTimeMillis();
+		
+		while ( System.currentTimeMillis() - time < 3000
+				&& getId() < 0 ) {}
+	}
+	
+	
+	public void analyseMsg(String s) {
+		String[] splitmessage = s.split(" ");
+		
+		if ( splitmessage[0].equalsIgnoreCase("ID") )
 		{
-			getCmp().getVb().getJl4().setText(splitmsg[1]);
-			getCmp().getVb().getJl5().setText(splitmsg[2]);
-			getCmp().getVb().getJl6().setText(splitmsg[3]);
+			setId(Integer.parseInt(splitmessage[1]));
 		}
-		
+	}
+	
+	@Override
+	public void receivedNewMessage(LIMessage msg) {
+		analyseMsg(msg.getPayload());
+		System.out.println("BRICK: " + msg.getPayload());
 	}
 
 	public void sendMessage(String s){
-		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
-		// System.out.println(s);
+		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));		
 	}
 	
+	/*
 	public void sendDirections(int angle, int power){
 		sendMessage("m " + angle + " " + power);
 	}
@@ -60,6 +83,7 @@ public class Brick implements MessageListenerInterface {
 				   + " " + power
 				   + " " + pRot);
 	}
+	*/
 	
 	// GETTERS - SETTERS
 	//------------------
@@ -86,5 +110,36 @@ public class Brick implements MessageListenerInterface {
 	public void setCmp(Computer cmp) {
 		this.cmp = cmp;
 	}
-	
+
+	public void setConnectionEstablished(boolean connectionEstablished) {
+		this.connectionEstablished = connectionEstablished;
+	}
+
+	public boolean isConnectionEstablished() {
+		return connectionEstablished;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
