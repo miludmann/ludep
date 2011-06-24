@@ -8,7 +8,7 @@ import lejos.nxt.MotorPort;
  * Receives direction commands;
  * Allocate the right power for each motor.
  */
-public class ControlMotor extends Thread{
+public class ControlMotor{
 	
 	// ATTRIBUTES
 	//-----------
@@ -20,6 +20,9 @@ public class ControlMotor extends Thread{
 	private int idCmd; ///< id of a cmd (used for multi cmds)
 	private double factorP; ///< p factor for the pid
 	private double factorI; ///< i factor for the pid
+	private double reduceI; ///< attenuation factor for I, default 1
+	
+	private MotorRegulator motreg;
 	
 	// CONSTRUCTORS
 	//-------------
@@ -42,15 +45,50 @@ public class ControlMotor extends Thread{
 		setIdCmd(0);
 		setFactorP(0);
 		setFactorI(0);
+		setReduceI(1);
+		
+		setMotreg(new MotorRegulator(this));
+		getMotreg().start();
 	}
 
 	// METHODS
 	//--------
-	public void run()
-	{
-		while (true) {}
-	}
 	
+    /**
+     * Settles the power for each different motors 
+     * so as to move the bot within the right direction
+     * @param angle angle you want to move the bot
+     * @param power power desired for the bot's movement
+     */
+	public void angleMotors(double angle, double power){
+				
+		angle = (90-angle)%360;
+		if ( angle == 90 || angle == 270 )
+			angle++;
+		
+		double dir = angle*2*Math.PI/360;
+		
+		double dx = Math.cos(dir);
+		double dy = Math.sin(dir);
+		
+		double powA, powB, powC, maxPow;
+		
+		powA = 2*dx/3;
+		powB = -(dy/Math.sqrt(3))-(dx/3);
+		powC = (dy/Math.sqrt(3))-(dx/3);
+		
+		maxPow = Math.max(Math.abs(powA), Math.max(Math.abs(powB), Math.abs(powC)));
+		
+		powA *= (int) power/maxPow;
+		powB *= (int) power/maxPow;
+		powC *= (int) power/maxPow;
+
+		setPowerA(powA);
+		setPowerB(powB);
+		setPowerC(powC);
+	}
+    
+    
 	/**
 	 * Move the robot with a certain angle and length
 	 * @param angle
@@ -60,7 +98,7 @@ public class ControlMotor extends Thread{
 	{
 		sendMSG("Start cmd " + getIdCmd());
 		
-		int idCurrentCmd = getIdCmd();
+		int idCurrentCmd = getNxt().getInterp().getMr().getNbCmdDone();
 		
 		angle = (angle%360+360)%360;
 		
@@ -114,8 +152,10 @@ public class ControlMotor extends Thread{
 		*/
 		
 		double initTime, endTime, nbIter;
-				
+		
+		/*
 		double noRot, noRotInt;
+		*/
 		
 		// When two of those flags goes to false, we stop the movement
 		boolean flagA = (bufferA1 != 0);
@@ -155,7 +195,10 @@ public class ControlMotor extends Thread{
 		setPowerB(pbFinal);
 		setPowerC(pcFinal);
 		
+		/*
+		noRot = 0;
 		noRotInt = 0;
+		*/
 		
 		initTime = System.currentTimeMillis();
 		nbIter = 0;
@@ -167,7 +210,7 @@ public class ControlMotor extends Thread{
 		
 		while ( (flagA && flagB) || (flagA && flagC) || (flagB && flagC) )
 		{
-			if ( idCurrentCmd != getIdCmd() )
+			if ( idCurrentCmd != getNxt().getInterp().getMr().getNbCmdReceived() )
 			{
 				this.getNxt().getCl().sendMessage("Aborted cmd " + idCurrentCmd);
 				
@@ -180,13 +223,13 @@ public class ControlMotor extends Thread{
 			}
 			nbIter++;
 			
+			/*
+			noRotInt += noRot;
+
 			noRot = Motor.A.getTachoCount()-angleA +
 					Motor.B.getTachoCount()-angleB +
 					Motor.C.getTachoCount()-angleC;
-			
-			noRotInt += noRot;
-			
-			setRotationPower((int) (-noRot*getFactorP()-noRotInt*getFactorI()));
+			*/		
 			
 			bufferA1 = Motor.A.getTachoCount() - (angleA + rotA);
 			bufferB1 = Motor.B.getTachoCount() - (angleB + rotB);
@@ -315,11 +358,24 @@ public class ControlMotor extends Thread{
 	
 	public void drawRectangle()
 	{
-		moveCart(500,500);
-		moveCart(-500, 500);
-		moveCart(-500, -500);
-		moveCart(500, -500);
+		moveCart(1000,1000);
+		moveCart(-1000, 1000);
+		moveCart(-1000, -1000);
+		moveCart(1000, -1000);
 	}
+	
+	public void drawPentagone(int iter, int len)
+	{
+		if ( iter < 2 ) return;
+		
+		int angle = 360/iter;
+		
+		for (int i = 0; i < iter; i++) {
+			moveAngLen(angle/2+i*angle, len/iter);
+		}
+	}
+	
+	
 	
 	public void incID()
 	{
@@ -411,5 +467,21 @@ public class ControlMotor extends Thread{
 
 	public double getFactorI() {
 		return factorI;
+	}
+
+	public void setMotreg(MotorRegulator motreg) {
+		this.motreg = motreg;
+	}
+
+	public MotorRegulator getMotreg() {
+		return motreg;
+	}
+
+	public void setReduceI(double reduceI) {
+		this.reduceI = reduceI;
+	}
+
+	public double getReduceI() {
+		return reduceI;
 	}
 }

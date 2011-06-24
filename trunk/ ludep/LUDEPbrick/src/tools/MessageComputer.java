@@ -2,8 +2,6 @@ package tools;
 
 import java.util.ArrayList;
 
-import lejos.nxt.Motor.Regulator;
-
 public class MessageComputer {
 	
 	// ATTRIBUTES

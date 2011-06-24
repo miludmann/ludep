@@ -6,44 +6,40 @@ public class Interpretator{
 
 	// ATTRIBUTES
 	//-----------
-	private ControlMotor cm;
+	private NXT nxt;
 	private MessageRegulator mr;
 	
 	// CONSTRUCTORS
 	//-------------
-	public Interpretator(ControlMotor cm) {
-		setCm(cm);
-		setMr(new MessageRegulator(getCm()));
+	public Interpretator(NXT nxt) {
+		setNxt(nxt);
+		setMr(new MessageRegulator(this));
 		getMr().start();
 	}
 	
 	// METHODS
 	//--------
 	public void treatMessage(MessageComputer mc){
-		getCm().incID();
+		getMr().getCm().incID();
 		getMr().addMessage(mc);
-	}
-
-	public void sendMessageCmp(String s){
-		getCm().getNxt().getCl().sendMessage(s);
 	}
 
 	// GETTERS - SETTERS
 	//------------------
-	public void setCm(ControlMotor cm) {
-		this.cm = cm;
-	}
-
-	public ControlMotor getCm() {
-		return cm;
-	}
-
 	public void setMr(MessageRegulator mr) {
 		this.mr = mr;
 	}
 
 	public MessageRegulator getMr() {
 		return mr;
+	}
+
+	public void setNxt(NXT nxt) {
+		this.nxt = nxt;
+	}
+
+	public NXT getNxt() {
+		return nxt;
 	}
 
 }
