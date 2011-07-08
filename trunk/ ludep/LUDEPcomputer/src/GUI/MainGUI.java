@@ -28,8 +28,6 @@ public class MainGUI {
 				getCmp().msgBricks("stop");
 			}
 		});
-		
-		//getWindow().setLayout(new GridLayout(6, 3));
 	}
 	
 	
