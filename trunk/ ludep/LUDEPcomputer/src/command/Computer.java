@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import Control.Controller;
 import GUI.MainGUI;
 
 //! Class to run the program on the computer
@@ -24,17 +25,17 @@ public class Computer {
 		setBrickNames(new ArrayList<String>());
 		setBrickAddresses(new ArrayList<String>());
 		
-		setMg(new MainGUI(this));
-		setBrickInControl(-1);
-		
 		getBrickNames().add("Branson");
 		getBrickAddresses().add("0016530DB4A2");
 		
 		getBrickNames().add("Jambon");
 		getBrickAddresses().add("0016530DB4FC");
 		
-		generateBrickList();
 		setCont(new Controller(this));
+		
+		generateBrickList();
+		setMg(new MainGUI(this));
+		getMg().generateGUI();
 	}
 	
 	
@@ -58,8 +59,6 @@ public class Computer {
 				getBrickList().add(tmp);
 			}
 		}
-		
-		getMg().generateGUI();
 	}
 	
 	public Brick getBrick(){
@@ -88,12 +87,9 @@ public class Computer {
 	}
 	
 	public void send(String s){
-		
-		
 		if ( s.equalsIgnoreCase("stop"))
 		{
-			msgBricks("stop");
-			System.exit(0);
+			stopProgram();
 		}
 		
 		if ( getBrickInControl() < 0 )
@@ -114,6 +110,11 @@ public class Computer {
 	
 	public void switchBrick(){
 		setBrickInControl((getBrickInControl()+1)%(getBrickList().size()+1));
+	}
+	
+	public void stopProgram(){
+		msgBricks("stop");
+		System.exit(0);
 	}
 
 	// MAIN
@@ -206,6 +207,7 @@ public class Computer {
 
 	public void setBrickInControl(int brickInControl) {
 		this.brickInControl = brickInControl;
+		getMg().changeBrickInControl(brickInControl);
 	}
 
 

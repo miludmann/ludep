@@ -1,8 +1,11 @@
-package command;
+package Control;
 
 
 import ch.aplu.xboxcontroller.XboxController;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
+
+import command.Computer;
+import command.ControllerRegulator;
 
 public class Controller{
 	
