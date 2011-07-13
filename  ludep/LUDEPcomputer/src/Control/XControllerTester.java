@@ -1,10 +1,10 @@
-package test;
+package Control;
 
 import java.io.IOException;
 
-public class Xbox360ControllerTester extends Xbox360Controller {
+public class XControllerTester extends XController {
 
-	public Xbox360ControllerTester() {
+	public XControllerTester() {
 
 	}
 
@@ -65,7 +65,7 @@ public class Xbox360ControllerTester extends Xbox360Controller {
 
 	public static void main(String[] args) throws IOException {
 		@SuppressWarnings("unused")
-		Xbox360ControllerTester cont = new Xbox360ControllerTester();
+		XControllerTester cont = new XControllerTester();
 	}
 
 }

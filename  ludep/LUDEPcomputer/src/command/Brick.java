@@ -53,9 +53,13 @@ public class Brick implements MessageListenerInterface {
 	public void analyseMsg(String s) {
 		String[] splitmessage = s.split(" ");
 		
-		if ( splitmessage[0].equalsIgnoreCase("ID") )
+		if ( splitmessage[0].equalsIgnoreCase("ID") && getId()<0 )
 		{
 			setId(Integer.parseInt(splitmessage[1]));
+		}
+		
+		if ( null != getCmp().getMg() ){
+			getCmp().getMg().displayMessageBrick(s);
 		}
 	}
 	

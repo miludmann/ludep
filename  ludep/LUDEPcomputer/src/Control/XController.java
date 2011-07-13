@@ -1,4 +1,4 @@
-package test;
+package Control;
 
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -6,13 +6,13 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
 
-public abstract class Xbox360Controller extends Thread {
+public abstract class XController extends Thread {
 
 	private Controller cont;
 	private float xAxis, yAxis, zNegAxis, zPosAxis, xRotation, yRotation;
 	private double sensitivity;
 
-	public Xbox360Controller() {
+	public XController() {
 
 		setCont(null);
 		initButtons();
@@ -48,6 +48,24 @@ public abstract class Xbox360Controller extends Thread {
 				 * System.out.println(comp.getName());
 				 * System.out.println(event.getValue());
 				 */
+			}
+		}
+	}
+	
+	private void checkController() {
+
+		Controller[] controllers = ControllerEnvironment
+				.getDefaultEnvironment().getControllers();
+
+		for (int i = 0; i < controllers.length; i++) {
+
+			System.out.println(controllers[i].getType());
+			System.out.println(controllers[i].getName());
+
+			if (controllers[i].getType().equals(Controller.Type.GAMEPAD)
+					&& (controllers[i].getName().contains("Xbox 360") || controllers[i]
+							.getName().contains("XBOX 360"))) {
+				setCont(controllers[i]);
 			}
 		}
 	}
@@ -183,24 +201,6 @@ public abstract class Xbox360Controller extends Thread {
 
 	private boolean isFarEnough(float a, float b) {
 		return Math.abs(a - b) > getSensitivity();
-	}
-
-	private void checkController() {
-
-		Controller[] controllers = ControllerEnvironment
-				.getDefaultEnvironment().getControllers();
-
-		for (int i = 0; i < controllers.length; i++) {
-
-			System.out.println(controllers[i].getType());
-			System.out.println(controllers[i].getName());
-
-			if (controllers[i].getType().equals(Controller.Type.GAMEPAD)
-					&& (controllers[i].getName().contains("Xbox 360") || controllers[i]
-							.getName().contains("XBOX 360"))) {
-				setCont(controllers[i]);
-			}
-		}
 	}
 
 	public void setCont(Controller cont) {
