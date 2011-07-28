@@ -8,29 +8,36 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import command.Brick;
-import command.Computer;
+import Ccommand.Brick;
+import Ccommand.Computer;
+
 
 
 public class MainGUI {
 	
 	private Computer cmp;
     private JFrame window;
-    private ArrayList<JButton> buttonList;
-    private ArrayList<JLabel> labelList;
+    private JButton allBrickConnect;
+    private JButton allBrickControl;
     private JTextField textArea;
 	
 	public MainGUI(Computer cmp){
 		setCmp(cmp);
-		setButtonList(new ArrayList<JButton>());
-		setLabelList(new ArrayList<JLabel>());
+	}
+	
+	public void addBrick(Brick b){
+		getWindow().add(b.getBrickGUI().getButtonConnect());
+		getWindow().add(b.getBrickGUI().getButtonLeader());
+		getWindow().add(b.getBrickGUI().getLabel());
+	}
+	
+	public void generateGUI() {
+		
 		setTextArea(new JTextField(20));
 		setWindow(new JFrame());
 		
@@ -39,61 +46,38 @@ public class MainGUI {
 				getCmp().stopProgram();
 			}
 		});
-	}
-	
-	public void addBrick(Brick b, final int id){
 		
-		JButton button = new JButton();
-		button.setText(b.getName());
+		getWindow().setLayout(new GridLayout(getCmp().getBrickList().size()+1, 3));
 		
-		button.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				getCmp().setBrickInControl(id);
-			}
-		});
-		if ( id == 0 )
-			button.setFont(new Font("Serif",Font.BOLD, 14));
-		else
-			button.setFont(new Font("Serif",Font.PLAIN, 14));
-		
-		getButtonList().add(id, button);		
-		getWindow().add(button);
-		
-		JLabel label = new JLabel();
-		getLabelList().add(label);
-		getWindow().add(label);
-	}
-	
-	public void generateGUI() {
-		
-		ArrayList<Brick> bricks = getCmp().getBrickList();
-		final int sizeBrickList = bricks.size();
-		
-		getWindow().setLayout(new GridLayout(bricks.size()+1, 2));
-		
-		for (int i = 0; i < bricks.size(); i++) {
-			addBrick(bricks.get(i), i);		
+		for (Brick b : getCmp().getBrickList()) {
+			addBrick(b);
 		}
 		
-		
-		JButton button = new JButton();
-		button.setText("All bricks");
-		
-		button.addActionListener(new ActionListener() {
+		setAllBrickConnect(new JButton());
+		getAllBrickConnect().setText("Connect all bricks");
+		ActionListener connect = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getCmp().setBrickInControl(sizeBrickList);
+				for (Brick b : getCmp().getBrickList()) {
+					b.connect();
+				}
 			}
-		});
+		};
+		getAllBrickConnect().addActionListener(connect);
+
+		setAllBrickControl(new JButton());
+		getAllBrickControl().setText("Control all bricks");
+		ActionListener control = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getCmp().setBrickInControl(null);
+			}
+		};
+		getAllBrickControl().addActionListener(control);
 		
-		button.setFont(new Font("Serif",Font.PLAIN, 14));
-		
-		getButtonList().add(sizeBrickList, button);
-		getWindow().add(button);
+		getWindow().add(getAllBrickConnect());
+		getWindow().add(getAllBrickControl());
 		getWindow().add(getTextArea());
 		
 		getTextArea().addKeyListener(new KeyListener() {
-
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -125,32 +109,47 @@ public class MainGUI {
 		getWindow().setVisible(true);
 	}
 	
-	public void changeBrickInControl(int i){
-				
-		for (JButton button : getButtonList()) {
-			
-			if ( getButtonList().indexOf(button) == i )
-				button.setFont(new Font("Serif",Font.BOLD, 14));
-			else
-				button.setFont(new Font("Serif",Font.PLAIN, 14));
-		}
-	}
-
-	
 	public void displayMessageBrick(String s){
-		
-		if ( null == getLabelList() )
-			return;
 		
 		String[] splitmessage = s.split(" ");
 		String reconstructedMessage = "";
 		int idBrickMessage = Integer.parseInt(splitmessage[1]);
 		
+		if ( splitmessage.length < 3 ) return;
+		
+		System.out.println(s);
+		
 		for (int i = 2; i < splitmessage.length; i++) {
 			reconstructedMessage = reconstructedMessage + splitmessage[i] + " ";
 		}
 		
-		getLabelList().get(idBrickMessage).setText(reconstructedMessage);
+		for (Brick b : getCmp().getBrickList()) {
+			if ( b.getId() == idBrickMessage )
+				b.getBrickGUI().getLabel().setText(reconstructedMessage);
+		}
+	}
+	
+	public void refresh(){
+		
+		if ( getCmp().getBrickInControl() == null )
+		{
+			getAllBrickControl().setFont(new Font("Dialog", 1, 12));
+		}
+		else
+		{
+			getAllBrickControl().setFont(new Font("Dialog", 0, 12));
+		}
+		
+		for (Brick b : getCmp().getBrickList()) {
+			if ( b.equals(getCmp().getBrickInControl()))
+			{
+				b.getBrickGUI().getButtonLeader().setFont(new Font("Dialog", 1, 12));
+			}
+			else
+			{
+				b.getBrickGUI().getButtonLeader().setFont(new Font("Dialog", 0, 12));
+			}
+		}
 	}
 	
 	// GETTERS - SETTERS
@@ -171,22 +170,6 @@ public class MainGUI {
 		return cmp;
 	}
 
-	public void setButtonList(ArrayList<JButton> buttonList) {
-		this.buttonList = buttonList;
-	}
-
-	public ArrayList<JButton> getButtonList() {
-		return buttonList;
-	}
-
-	public ArrayList<JLabel> getLabelList() {
-		return labelList;
-	}
-
-	public void setLabelList(ArrayList<JLabel> labelList) {
-		this.labelList = labelList;
-	}
-
 	public void setTextArea(JTextField textArea) {
 		this.textArea = textArea;
 	}
@@ -195,5 +178,19 @@ public class MainGUI {
 		return textArea;
 	}
 
+	public JButton getAllBrickConnect() {
+		return allBrickConnect;
+	}
 
+	public void setAllBrickConnect(JButton allBrickConnect) {
+		this.allBrickConnect = allBrickConnect;
+	}
+
+	public JButton getAllBrickControl() {
+		return allBrickControl;
+	}
+
+	public void setAllBrickControl(JButton allBrickControl) {
+		this.allBrickControl = allBrickControl;
+	}
 }
