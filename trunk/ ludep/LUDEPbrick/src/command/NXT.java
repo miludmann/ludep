@@ -31,7 +31,7 @@ public class NXT{
 		
 		if ( mc.getFragment(0).equalsIgnoreCase("ID") && getId() < 0 ) {
 			setId(Integer.parseInt(mc.getFragment(1)));
-			getCl().sendMessage("ID " + getId());
+			getCl().sendMessage("Brick connected");
 		}
 		
 		if ( mc.getFragment(0).equalsIgnoreCase("stop") ) {
