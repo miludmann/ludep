@@ -13,8 +13,9 @@ public class FlockHandler extends Thread{
 	private Brick brickInControl;
 	private int sizeFlock;
 	private int nbRobotsFollowing;
-	private int waitTime;
+	private int desiredSpace;
 	
+	private ArrayList<Brick> consideredBricks;
 	private ArrayList<Point> desiredPosition;
 	
 	public FlockHandler(Computer c, ArrayList<Brick> brickList, Brick b)
@@ -22,8 +23,7 @@ public class FlockHandler extends Thread{
 		this.computer = c;
 		this.brickInControl = b;
 		this.brickList = brickList;
-		
-		waitTime = 100;
+		this.desiredSpace = 50;
 		
 		this.setDaemon(true);
 		this.start();
@@ -43,8 +43,18 @@ public class FlockHandler extends Thread{
 			
 			if ( isLeaderLocated() )
 			{
+				computeDesiredLocations();
 				
 			}
+		}
+	}
+	
+	public void computeDesiredLocations()
+	{
+		setDesiredPosition(new ArrayList<Point>());
+		
+		for (int i = 0; i < nbRobotsFollowing; i++) {
+			
 		}
 	}
 	
@@ -58,10 +68,14 @@ public class FlockHandler extends Thread{
 	public void checkFlock()
 	{
 		int nbFlock = 0;
+		setConsideredBricks(new ArrayList<Brick>());
 		
 		for (Brick b : brickList) {
 			if( b.isConnectionEstablished() )
+			{
 				nbFlock++;
+				getConsideredBricks().add(b);
+			}
 		}
 		
 		this.sizeFlock = nbFlock;
@@ -114,6 +128,14 @@ public class FlockHandler extends Thread{
 
 	public ArrayList<Point> getDesiredPosition() {
 		return desiredPosition;
+	}
+
+	public void setConsideredBricks(ArrayList<Brick> consideredBricks) {
+		this.consideredBricks = consideredBricks;
+	}
+
+	public ArrayList<Brick> getConsideredBricks() {
+		return consideredBricks;
 	}
 	
 	

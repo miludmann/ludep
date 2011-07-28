@@ -10,17 +10,19 @@ import command.Brick;
 
 
 public class BrickGUI{
-	
+
 	private Brick brick;
 	private JButton buttonConnect;
 	private JButton buttonLeader;
 	private JLabel label;
+	private JLabel baterryLabel;
 	private ActionListener connect, leader;
-	
+
 	public BrickGUI(Brick b){
 		setBrick(b);
 		setLabel(new JLabel("Please connect"));
-		
+		setBaterryLabel(new JLabel(""));
+
 		setButtonConnect(new JButton());
 		connect = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -38,26 +40,48 @@ public class BrickGUI{
 		};
 		getButtonLeader().setText("Set " + brick.getName() + " leader");
 		getButtonLeader().addActionListener(leader);
-		
+
 		getButtonLeader().setEnabled(false);
 	}
-	
+
 	public void brickConnected(){
 		getButtonConnect().setEnabled(false);
 		getButtonLeader().setEnabled(true);
 		getLabel().setText("Brick connected!");
 	}
-	
+
 	public void brickDisconnected(){
 		getButtonLeader().setEnabled(false);
 		getButtonConnect().setEnabled(true);
 		getLabel().setText("Connection closed");
 	}
-	
+
 	public void setText(String s){
-		getLabel().setText(s);
+		String[] splitText = s.split(" ");
+		int battery;
+		
+		if( splitText[0].equalsIgnoreCase("boom") )
+		{
+			battery = Integer.parseInt(splitText[1]);
+			getBaterryLabel().setText("Battery: " + battery + "mV");
+			reactToBatteryLvl(battery);
+		}
+		else
+		{
+			getLabel().setText(s);
+		}
 	}
 	
+	public void reactToBatteryLvl(int batteryLvl)
+	{
+		if ( batteryLvl < 7100 )
+		{
+			brick.sendMessage("stop");
+			getBrick().closeConnection();
+			getBaterryLabel().setText("Battery too low _ connection closed");
+		}
+	}
+
 	public JButton getButtonConnect() {
 		return buttonConnect;
 	}
@@ -104,5 +128,13 @@ public class BrickGUI{
 
 	public JLabel getLabel() {
 		return label;
+	}
+
+	public void setBaterryLabel(JLabel baterryLabel) {
+		this.baterryLabel = baterryLabel;
+	}
+
+	public JLabel getBaterryLabel() {
+		return baterryLabel;
 	}
 }

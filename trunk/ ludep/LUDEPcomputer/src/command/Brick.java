@@ -26,6 +26,7 @@ public class Brick implements MessageListenerInterface {
 	private int id;
 	private boolean flag;
 	private int direction;
+	private BrickChecker bc;
 	
 	// CONSTRUCTORS
 	//-------------
@@ -68,7 +69,7 @@ public class Brick implements MessageListenerInterface {
 		
 		long time = System.currentTimeMillis();
 		
-		while ( System.currentTimeMillis() - time < 5000
+		while ( System.currentTimeMillis() - time < 3000
 				&& !flag ) {}
 		
 		if (!flag)
@@ -77,8 +78,13 @@ public class Brick implements MessageListenerInterface {
 	
 	
 	public void analyseMsg(String s) {
-		if (s.equalsIgnoreCase("Brick connected"));
+		if (s.equalsIgnoreCase("Brick connected"))
+		{
 			setFlag(true);
+			setBc(new BrickChecker(this));
+		}
+		
+		if (getBc() != null) getBc().resetCount();
 		
 		if ( null != getCmp().getMg() ){
 			getBrickGUI().setText(s);
@@ -94,7 +100,8 @@ public class Brick implements MessageListenerInterface {
 	
 	public void receivedNewMessage(LIMessage msg) {
 		analyseMsg(msg.getPayload());
-		System.out.println("BRICK: " + msg.getPayload());
+		// TODO: check or uncheck to see the messages of the brick 
+		// System.out.println("BRICK: " + msg.getPayload());
 	}
 
 	public void sendMessage(String s){
@@ -104,6 +111,11 @@ public class Brick implements MessageListenerInterface {
 	
 	public void setLeader(){
 		getCmp().setBrickInControl(this);
+	}
+	
+	public void closeConnection()
+	{
+		getmF().close();
 	}
 	
 	// GETTERS - SETTERS
@@ -137,9 +149,10 @@ public class Brick implements MessageListenerInterface {
 		
 		if ( ! connectionEstablished )
 		{
-			getmF().close();
+			setBc(null);
 			setFlag(false);
 			setPosition(null);
+			getCmp().switchBrick();
 		}
 	}
 
@@ -204,5 +217,13 @@ public class Brick implements MessageListenerInterface {
 
 	public int getDirection() {
 		return direction;
+	}
+
+	public void setBc(BrickChecker bc) {
+		this.bc = bc;
+	}
+
+	public BrickChecker getBc() {
+		return bc;
 	}
 }

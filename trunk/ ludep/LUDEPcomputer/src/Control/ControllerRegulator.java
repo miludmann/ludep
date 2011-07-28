@@ -17,15 +17,15 @@ public class ControllerRegulator extends Thread{
 		setLastRM(0);
 		setLastRD(0);
 		
+		setDaemon(true);
+		start();
 	}
 
 	// METHODS
 	//--------
 	public void run(){
-		double timeRef;
-		
+	
 		while (true) {
-			timeRef = System.currentTimeMillis();
 			if ( valueHaveChanged() )
 			{
 				setLastLM(getCont().getLeftMagnitude());
@@ -33,17 +33,26 @@ public class ControllerRegulator extends Thread{
 				setLastRM(getCont().getRightMagnitude());
 				setLastRD(getCont().getRightDirection());
 				refreshDrivingParameters();
-				while( System.currentTimeMillis() - timeRef < 100 ) {}
+				
+			}
+			
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
 	
 	public void refreshDrivingParameters(){
 		
+		/*
 		System.out.println(
 				(int) getLastLD() + " " +
 				(int) getLastLM() + " " +
 				(int) (getLastRM()*Math.cos(2*Math.PI/360*(450-getLastRD())%360)));
+		*/
 		
 		getCont().getComp().send("x " +
 				(int) getLastLD() + " " +

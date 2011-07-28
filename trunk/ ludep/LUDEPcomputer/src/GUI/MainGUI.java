@@ -34,6 +34,7 @@ public class MainGUI {
 		getWindow().add(b.getBrickGUI().getButtonConnect());
 		getWindow().add(b.getBrickGUI().getButtonLeader());
 		getWindow().add(b.getBrickGUI().getLabel());
+		getWindow().add(b.getBrickGUI().getBaterryLabel());
 	}
 	
 	public void generateGUI() {
