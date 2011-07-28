@@ -3,8 +3,8 @@ package Flock;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import Ccommand.Brick;
-import Ccommand.Computer;
+import command.Brick;
+import command.Computer;
 
 public class FlockHandler extends Thread{
 	

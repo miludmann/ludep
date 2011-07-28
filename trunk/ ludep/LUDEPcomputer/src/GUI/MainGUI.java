@@ -13,8 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-import Ccommand.Brick;
-import Ccommand.Computer;
+import command.Brick;
+import command.Computer;
 
 
 
