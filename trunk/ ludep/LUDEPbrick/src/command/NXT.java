@@ -12,6 +12,7 @@ public class NXT{
 	private int id;
 	private ComputerLink cl;
 	private Interpretator interp;
+	private Pulsor pulsor;
 	private boolean isRunning;
 	
 	// CONSTRUCTORS
@@ -20,6 +21,7 @@ public class NXT{
 		setId(-1);
 		setCl(new ComputerLink(this));
 		setInterp(new Interpretator(this));
+		setPulsor(new Pulsor(this));
 		setRunning(true);
 	}
 	
@@ -85,5 +87,13 @@ public class NXT{
 
 	public int getId() {
 		return id;
+	}
+
+	public void setPulsor(Pulsor pulsor) {
+		this.pulsor = pulsor;
+	}
+
+	public Pulsor getPulsor() {
+		return pulsor;
 	}
 }

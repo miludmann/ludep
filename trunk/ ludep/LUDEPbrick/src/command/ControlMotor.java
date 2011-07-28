@@ -212,7 +212,7 @@ public class ControlMotor{
 		{
 			if ( idCurrentCmd != getNxt().getInterp().getMr().getNbCmdReceived() )
 			{
-				this.getNxt().getCl().sendMessage("Aborted cmd " + idCurrentCmd);
+				// this.getNxt().getCl().sendMessage("Aborted cmd " + idCurrentCmd);
 				
 				setPowerA(0);
 				setPowerB(0);
