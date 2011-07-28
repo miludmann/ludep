@@ -34,6 +34,7 @@ public class ComputerLink implements MessageListenerInterface{
 	}
 
 	public void sendMessage(String s){
+		//getMfw().SendMessage(new LIMessage(LIMessageType.Command, "ID " + getNxt().getId() + " " + s));
 		getMfw().SendMessage(new LIMessage(LIMessageType.Command, s));
 	}
 	
