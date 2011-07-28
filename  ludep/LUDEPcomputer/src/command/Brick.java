@@ -1,7 +1,10 @@
 package command;
 
+import java.awt.Point;
+
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
+import GUI.BrickGUI;
 import MessageComponent.LIMessage;
 import MessageComponent.LIMessageType;
 import MessageComponent.MessageFramework;
@@ -18,76 +21,90 @@ public class Brick implements MessageListenerInterface {
 	private NXTInfo m_info;
 	private Computer cmp;
 	private boolean connectionEstablished;
+	private Point position;
+	private BrickGUI brickGUI;
 	private int id;
+	private boolean flag;
+	private int direction;
 	
 	// CONSTRUCTORS
 	//-------------
-	public Brick(Computer c, String name, String macAddress){
-		
-		setName(name);
-		setAddress(macAddress);
+	public Brick(int id, Computer c, String name, String macAddress){
 		
 		setCmp(c);
-		setM_info(new NXTInfo(NXTCommFactory.BLUETOOTH, name, macAddress));
-		setmF(new MessageFramework());
-		getmF().addMessageListener(this);
-		setConnectionEstablished(getmF().ConnectToNXT(m_info));
-		setId(-1);
-		
-		if ( isConnectionEstablished() )
-			idProcess();
+		setId(id);
+		setName(name);
+		setAddress(macAddress);
+		setPosition(null);
+		setDirection(0);
+
+		setBrickGUI(new BrickGUI(this));
 	}
 
 	// METHODS
 	//--------
+	
+	public void connect(){
+
+		if ( isConnectionEstablished() ) return;
+		flag = false;
+		
+		setM_info(new NXTInfo(NXTCommFactory.BLUETOOTH, getName(), getAddress()));
+		
+		setmF(new MessageFramework());
+		getmF().setMessageListener(this);
+		getmF().ConnectToNXT(m_info);
+				
+		if ( isConnectionEstablished() )
+		{
+			idProcess();
+		}
+		
+		getCmp().getMg().refresh();
+	}
+	
 	public void idProcess(){
-		sendMessage("ID " + getCmp().getBrickList().size());
+		sendMessage("ID " + getId());
 		
 		long time = System.currentTimeMillis();
 		
-		while ( System.currentTimeMillis() - time < 3000
-				&& getId() < 0 ) {}
+		while ( System.currentTimeMillis() - time < 5000
+				&& !flag ) {}
+		
+		if (!flag)
+			getmF().close();
 	}
 	
 	
 	public void analyseMsg(String s) {
-		String[] splitmessage = s.split(" ");
-		
-		if ( splitmessage[0].equalsIgnoreCase("ID") && getId()<0 )
-		{
-			setId(Integer.parseInt(splitmessage[1]));
-		}
+		if (s.equalsIgnoreCase("Brick connected"));
+			setFlag(true);
 		
 		if ( null != getCmp().getMg() ){
-			getCmp().getMg().displayMessageBrick(s);
+			getBrickGUI().setText(s);
 		}
 	}
+
+	public void connectionStatus(boolean bool) {
+		setConnectionEstablished(bool);
+
+		if(! bool)
+			getBrickGUI().brickDisconnected();
+	}
 	
-	@Override
 	public void receivedNewMessage(LIMessage msg) {
 		analyseMsg(msg.getPayload());
 		System.out.println("BRICK: " + msg.getPayload());
 	}
 
 	public void sendMessage(String s){
-		getmF().SendMessage(new LIMessage(LIMessageType.Command, s));		
+		if ( isConnectionEstablished() )
+			getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
 	}
 	
-	/*
-	public void sendDirections(int angle, int power){
-		sendMessage("m " + angle + " " + power);
+	public void setLeader(){
+		getCmp().setBrickInControl(this);
 	}
-	
-	public void sendRotation(int power){
-		sendMessage("r " + power);
-	}
-	
-	public void sendCommand(int angle, int power, int pRot){
-		sendMessage("x " + angle
-				   + " " + power
-				   + " " + pRot);
-	}
-	*/
 	
 	// GETTERS - SETTERS
 	//------------------
@@ -117,6 +134,13 @@ public class Brick implements MessageListenerInterface {
 
 	public void setConnectionEstablished(boolean connectionEstablished) {
 		this.connectionEstablished = connectionEstablished;
+		
+		if ( ! connectionEstablished )
+		{
+			getmF().close();
+			setFlag(false);
+			setPosition(null);
+		}
 	}
 
 	public boolean isConnectionEstablished() {
@@ -145,5 +169,40 @@ public class Brick implements MessageListenerInterface {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public void setBrickGUI(BrickGUI brickGUI) {
+		this.brickGUI = brickGUI;
+	}
+
+	public BrickGUI getBrickGUI() {
+		return brickGUI;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
+		
+		if (flag)
+			getBrickGUI().brickConnected();
+	}
+
+	public void setPosition(Point position) {
+		this.position = position;
+	}
+
+	public Point getPosition() {
+		return position;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
+	public int getDirection() {
+		return direction;
 	}
 }

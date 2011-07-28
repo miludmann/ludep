@@ -6,84 +6,66 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import Control.Controller;
+import Flock.FlockHandler;
 import GUI.MainGUI;
+import Server.IServerCom;
+import Server.ServerCom;
 
 //! Class to run the program on the computer
-public class Computer {
+public class Computer implements IServerCom {
 
 	private ArrayList<Brick> brickList;
-	private ArrayList<String> brickNames;
-	private ArrayList<String> brickAddresses;
-	private int brickInControl;
+	private Brick brickInControl;
 	private Controller cont;
 	private MainGUI mg;
+	private ServerCom sc;
+	private FlockHandler fh;
 
 	//! Constructor
 	public Computer(){
 		
 		setBrickList(new ArrayList<Brick>());
-		setBrickNames(new ArrayList<String>());
-		setBrickAddresses(new ArrayList<String>());
 		
-		getBrickNames().add("Branson");
-		getBrickAddresses().add("0016530DB4A2");
-		
-		getBrickNames().add("Jambon");
-		getBrickAddresses().add("0016530DB4FC");
+		getBrickList().add(new Brick(0, this, "Branson", "0016530DB4A2"));
+		getBrickList().add(new Brick(1, this, "Jambon", "0016530DB4FC"));
 		
 		setCont(new Controller(this));
 		
-		generateBrickList();
 		setMg(new MainGUI(this));
 		getMg().generateGUI();
+		setBrickInControl(null);
+		
+		
+		// setFh(new FlockHandler(this, getBrickList(), getBrickInControl()));
+		setSc(new ServerCom(4242, this));
 	}
 	
 	
 	// METHODS
 	//--------
-	public void generateBrickList(){
+	public void msgBricks(String s){
 		
-		Brick tmp;
+		if ( getBrickList().size() == 0 )
+			return;
 		
-		for (int i = 0; i < getBrickNames().size(); i++) {
-			tmp = new Brick(this,
-							getBrickNames().get(i),
-							getBrickAddresses().get(i));
-			
-			if ( tmp.isConnectionEstablished()
-					&& tmp.getId() >= 0 )
-			{
-				if ( getBrickInControl() < 0 )
-					setBrickInControl(0);
-				
-				getBrickList().add(tmp);
-			}
+		for (Brick b : getBrickList()) {
+			b.sendMessage(s);
 		}
 	}
 	
-	public Brick getBrick(){
-		if (getBrickInControl() < 0
-				|| getBrickInControl() >= getBrickList().size())
-			return null;
-		
-		return getBrickList().get(getBrickInControl());
-	}
-	
-	public void msgBricks(String s){
-		for (int i = 0; i < getBrickList().size(); i++) {
-			getBrickList().get(i).sendMessage(s);
-		}		
-	}
-	
 	public void msgNotControlledBricks(String s){
-		for (int i = 0; i < getBrickList().size(); i++) {
-			if ( i != getBrickInControl() )
-				getBrickList().get(i).sendMessage(s);
+		
+		if ( null != getBrickInControl() )
+			return;
+		
+		for (Brick b : getBrickList()) {
+			if ( ! b.equals(getBrickInControl()) )
+				b.sendMessage(s);
 		}
 	}
 	
 	public void msgControlledBrick(String s){
-		getBrick().sendMessage(s);
+		getBrickInControl().sendMessage(s);
 	}
 	
 	public void send(String s){
@@ -92,29 +74,44 @@ public class Computer {
 			stopProgram();
 		}
 		
-		if ( getBrickInControl() < 0 )
-		{
-			System.out.println("No brick found");
-			return;
-		}
-		
-		if ( getBrickInControl() == getBrickList().size() )
-		{
-			msgBricks(s);
-		}
-		else
+		if ( null != getBrickInControl() )
 		{
 			msgControlledBrick(s);
 		}
+		else
+		{
+			msgBricks(s);
+		}
 	}
-	
-	public void switchBrick(){
-		setBrickInControl((getBrickInControl()+1)%(getBrickList().size()+1));
+
+	public void switchBrick(){		
+		for (Brick b : getBrickList()) {
+			
+			if ( null == getBrickInControl() && b.isConnectionEstablished() ){
+				setBrickInControl(b);
+				
+				if ( getSc() != null )
+					getSc().sendMessage("leader " + b.getId());
+				
+				return;
+			}
+			
+			if ( b.equals(getBrickInControl()) )
+				setBrickInControl(null);
+		}
+		
+		if ( getSc() != null )
+			getSc().sendMessage("leader -1");
 	}
 	
 	public void stopProgram(){
 		msgBricks("stop");
 		System.exit(0);
+	}
+
+	public void treatmessage(String s) {
+		//TODO: treat message from client
+		System.out.println("Received from client: " + s);
 	}
 
 	// MAIN
@@ -133,7 +130,7 @@ public class Computer {
 		
 		String input = "";
 		
-		System.out.println("You can play now...");
+		System.out.println("Everything's ready...");
 		
 		while(true){
 
@@ -164,27 +161,6 @@ public class Computer {
 		this.brickList = brickList;
 	}
 
-
-	public ArrayList<String> getBrickNames() {
-		return brickNames;
-	}
-
-
-	public void setBrickNames(ArrayList<String> brickNames) {
-		this.brickNames = brickNames;
-	}
-
-
-	public ArrayList<String> getBrickAddresses() {
-		return brickAddresses;
-	}
-
-
-	public void setBrickAddresses(ArrayList<String> brickAddresses) {
-		this.brickAddresses = brickAddresses;
-	}
-
-
 	public Controller getCont() {
 		return cont;
 	}
@@ -205,13 +181,38 @@ public class Computer {
 	}
 
 
-	public void setBrickInControl(int brickInControl) {
+	public void setBrickInControl(Brick brickInControl) {
+		
+		if ( brickInControl == this.brickInControl)
+			return;
+		
 		this.brickInControl = brickInControl;
-		getMg().changeBrickInControl(brickInControl);
+		
+		mg.refresh();
 	}
 
 
-	public int getBrickInControl() {
+	public Brick getBrickInControl() {
 		return brickInControl;
+	}
+
+
+	public void setSc(ServerCom sc) {
+		this.sc = sc;
+	}
+
+
+	public ServerCom getSc() {
+		return sc;
+	}
+
+
+	public void setFh(FlockHandler fh) {
+		this.fh = fh;
+	}
+
+
+	public FlockHandler getFh() {
+		return fh;
 	}
 }

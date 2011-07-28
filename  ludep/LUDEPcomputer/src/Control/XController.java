@@ -168,35 +168,20 @@ public abstract class XController extends Thread {
 	}
 
 	abstract void yRotation(Float value);
-
 	abstract void xRotation(Float value);
-
 	abstract void zPosAxis(Float value);
-
 	abstract void zNegAxis(Float value);
-
 	abstract void yAxis(Float value);
-
 	abstract void xAxis(Float value);
-
 	abstract void button9(Float value);
-
 	abstract void button8(Float value);
-
 	abstract void button7(Float value);
-
 	abstract void button6(Float value);
-
 	abstract void button5(Float value);
-
 	abstract void button4(Float value);
-
 	abstract void button3(Float value);
-
 	abstract void button2(Float value);
-
 	abstract void button1(Float value);
-
 	abstract void button0(Float value);
 
 	private boolean isFarEnough(float a, float b) {
