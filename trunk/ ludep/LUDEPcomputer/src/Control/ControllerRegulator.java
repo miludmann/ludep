@@ -1,6 +1,5 @@
-package command;
+package Control;
 
-import Control.Controller;
 
 public class ControllerRegulator extends Thread{
 	
