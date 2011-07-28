@@ -11,8 +11,17 @@ public class ServerCom extends Thread {
 
 	private BufferedReader in;
 	private PrintWriter out;
+	private IServerCom isc;
+	
 
+	public ServerCom(int port, IServerCom isc){
+		this(port);
+		this.isc = isc;
+	}
+	
 	public ServerCom(int port) {
+		
+		this.isc = null;
 
 		ServerSocket serverSocket = null;
 		
@@ -46,7 +55,7 @@ public class ServerCom extends Thread {
 
 		this.start();
 
-		System.out.println("Connection closed");
+		// System.out.println("Connection closed");
 	}
 
 	public void run() {
@@ -67,7 +76,10 @@ public class ServerCom extends Thread {
 	}
 	
 	public void treatMessageReceived(String s){
-		System.out.println("SERVER: String received: " + s);
+		if ( null != this.isc )
+		{
+			isc.treatmessage(s);
+		}
 	}
 
 	public void sendMessage(String s) {
@@ -88,5 +100,13 @@ public class ServerCom extends Thread {
 
 	public void setOut(PrintWriter out) {
 		this.out = out;
+	}
+
+	public void setIsc(IServerCom isc) {
+		this.isc = isc;
+	}
+
+	public IServerCom getIsc() {
+		return isc;
 	}
 }
