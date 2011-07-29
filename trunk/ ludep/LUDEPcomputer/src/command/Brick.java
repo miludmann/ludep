@@ -37,7 +37,7 @@ public class Brick implements MessageListenerInterface {
 		setName(name);
 		setAddress(macAddress);
 		setPosition(null);
-		setDirection(0);
+		setDirection(90);
 
 		setBrickGUI(new BrickGUI(this));
 	}
