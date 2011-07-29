@@ -74,7 +74,7 @@ public class BrickGUI{
 	
 	public void reactToBatteryLvl(int batteryLvl)
 	{
-		if ( batteryLvl < 7100 )
+		if ( batteryLvl < 6500 )
 		{
 			brick.sendMessage("stop");
 			getBrick().closeConnection();

@@ -1,5 +1,6 @@
 package command;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,8 +36,7 @@ public class Computer implements IServerCom {
 		getMg().generateGUI();
 		setBrickInControl(null);
 		
-		
-		// setFh(new FlockHandler(this, getBrickList(), getBrickInControl()));
+		setFh(new FlockHandler(this, getBrickList()));
 		setSc(new ServerCom(4242, this));
 	}
 	
@@ -112,6 +112,30 @@ public class Computer implements IServerCom {
 	public void treatmessage(String s) {
 		//TODO: treat message from client
 		System.out.println("Received from client: " + s);
+		
+		String splitMessage[] = s.split(" ");
+		
+		int id, posX, posY;
+		
+		id = Integer.parseInt(splitMessage[1]);
+		posX = Integer.parseInt(splitMessage[4]);
+		posY = Integer.parseInt(splitMessage[6]);
+
+		
+		// Brick branson
+		if( id == 1 )
+		{
+			getBrickList().get(0).setPosition(new Point(posX, posY));
+		}
+
+		// Brick jambon 
+		if( id == 2 )
+		{
+			getBrickList().get(1).setPosition(new Point(posX, posY));
+		}
+
+		
+		
 	}
 
 	// MAIN
