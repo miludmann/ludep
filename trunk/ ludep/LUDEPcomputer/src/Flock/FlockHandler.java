@@ -13,6 +13,7 @@ public class FlockHandler extends Thread{
 	private int sizeFlock;
 	private int nbRobotsFollowing;
 	private float desiredSpace;
+	private int flockDirection;
 
 	private Brick brickInControl;
 	private ArrayList<Brick> consideredBricks;
@@ -23,6 +24,7 @@ public class FlockHandler extends Thread{
 		this.computer = c;
 		this.brickList = brickList;
 		this.desiredSpace = 300;
+		this.flockDirection = 90;
 
 		this.setDaemon(true);
 		this.start();
@@ -42,7 +44,7 @@ public class FlockHandler extends Thread{
 			{
 				checkFlock();
 
-				System.out.println("Size Flock: " + sizeFlock);
+				// System.out.println("Size Flock: " + sizeFlock);
 
 				if ( isLeaderLocated() && sizeFlock > 1 )
 				{
@@ -62,16 +64,22 @@ public class FlockHandler extends Thread{
 			brickPosition = getConsideredBricks().get(i).getPosition();
 			desiredPosition = getDesiredPositions().get(i);
 			
-			
-			getConsideredBricks().get(i).sendMessage("moveC " 
-					+ (desiredPosition.x-brickPosition.x) + " "
-					+ (desiredPosition.y-brickPosition.y));
-			
+			if ( distancePositions(desiredPosition, brickPosition) > 200 )
+			{
+				getConsideredBricks().get(i).sendMessage("moveC " 
+						+ (desiredPosition.x-brickPosition.x) + " "
+						+ (desiredPosition.y-brickPosition.y));
+
 			/*
-			System.out.println(getConsideredBricks().get(i).getName() + "moveC " 
+				System.out.println(getConsideredBricks().get(i).getName() + "moveC " 
 					+ (desiredPosition.x-brickPosition.x) + " "
 					+ (desiredPosition.y-brickPosition.y));
 			*/
+			}
+			else
+			{
+				getConsideredBricks().get(i).sendMessage("s");
+			}
 		}
 	}
 
@@ -79,7 +87,9 @@ public class FlockHandler extends Thread{
 	{
 		setDesiredPositions(new ArrayList<Point>());
 
-		float referenceAngle = brickInControl.getDirection();
+		//float referenceAngle = brickInControl.getDirection();
+		float referenceAngle = getFlockDirection();
+		System.out.println("Flock direction: " + getFlockDirection());
 		referenceAngle = (float) (referenceAngle*2*Math.PI/360);
 
 		Point referencePoint = new Point((int) (desiredSpace*Math.cos(referenceAngle)),
@@ -101,9 +111,15 @@ public class FlockHandler extends Thread{
 
 			getDesiredPositions().add(bufferPoint);
 		}
-
 	}
 
+	public double distancePositions(Point a, Point b)
+	{
+		return Math.sqrt(((a.x)-(b.x))*((a.x)-(b.x))
+				+((a.y)-(b.y))*((a.y)-(b.y)));
+	}
+	
+	
 	public boolean isLeaderLocated()
 	{
 		if ( brickInControl == null ) return false;
@@ -179,6 +195,14 @@ public class FlockHandler extends Thread{
 
 	public ArrayList<Brick> getConsideredBricks() {
 		return consideredBricks;
+	}
+
+	public void setFlockDirection(int flockDirection) {
+		this.flockDirection = flockDirection;
+	}
+
+	public int getFlockDirection() {
+		return flockDirection;
 	}
 
 

@@ -47,12 +47,9 @@ public class ControllerRegulator extends Thread{
 	
 	public void refreshDrivingParameters(){
 		
-		/*
-		System.out.println(
-				(int) getLastLD() + " " +
-				(int) getLastLM() + " " +
-				(int) (getLastRM()*Math.cos(2*Math.PI/360*(450-getLastRD())%360)));
-		*/
+		int flockDirection = (int) ((-getLastLD()+90+360)%360);
+		if ( getLastLM() > 25 )
+			getCont().getComp().getFh().setFlockDirection(flockDirection);
 		
 		getCont().getComp().send("x " +
 				(int) getLastLD() + " " +
