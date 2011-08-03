@@ -8,7 +8,7 @@ public class ServerComTester {
 
 	public static void main(String[] args) throws IOException {
 
-		ServerCom sc = new ServerCom(4242);
+		ServerCom sc = new ServerCom(4242, null);
 
 		String outputLine;
 		BufferedReader stdIn = new BufferedReader(new InputStreamReader(

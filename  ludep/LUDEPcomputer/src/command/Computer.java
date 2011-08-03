@@ -27,8 +27,8 @@ public class Computer implements IServerCom {
 		
 		setBrickList(new ArrayList<Brick>());
 		
-		getBrickList().add(new Brick(0, this, "Branson", "0016530DB4A2"));
-		getBrickList().add(new Brick(1, this, "Jambon", "0016530DB4FC"));
+		getBrickList().add(new Brick(1, this, "Branson", "0016530DB4A2"));
+		getBrickList().add(new Brick(2, this, "Jambon", "0016530DB4FC"));
 		
 		setCont(new Controller(this));
 		
@@ -111,31 +111,26 @@ public class Computer implements IServerCom {
 
 	public void treatmessage(String s) {
 		//TODO: treat message from client
-		System.out.println("Received from client: " + s);
+		// System.out.println("Received from client: " + s);
 		
 		String splitMessage[] = s.split(" ");
 		
-		int id, posX, posY;
+		int id, posX, posY, deg;
 		
 		id = Integer.parseInt(splitMessage[1]);
 		posX = Integer.parseInt(splitMessage[4]);
 		posY = Integer.parseInt(splitMessage[6]);
-
+		deg = Integer.parseInt(splitMessage[8]);
 		
-		// Brick branson
-		if( id == 1 )
-		{
-			getBrickList().get(0).setPosition(new Point(posX, posY));
+		for (Brick b : getBrickList()) {
+			if ( b.getId() == id)
+			{
+				b.setPosition(new Point(posX, posY));
+				//if ( deg != 181 )
+				//	b.setDirection(deg);
+				return;
+			}
 		}
-
-		// Brick jambon 
-		if( id == 2 )
-		{
-			getBrickList().get(1).setPosition(new Point(posX, posY));
-		}
-
-		
-		
 	}
 
 	// MAIN

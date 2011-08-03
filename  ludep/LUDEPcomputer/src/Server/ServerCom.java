@@ -13,18 +13,22 @@ public class ServerCom extends Thread {
 	private PrintWriter out;
 	private IServerCom isc;
 	
+	private ServerSocket serverSocket;
+	private Socket clientSocket;
+	private int port;
+	
 
 	public ServerCom(int port, IServerCom isc){
-		this(port);
 		this.isc = isc;
+		this.port = port;
+		connectTo(port);
 	}
 	
-	public ServerCom(int port) {
-		
-		this.isc = null;
+	public void connectTo(int port) {
 
-		ServerSocket serverSocket = null;
+		//ServerSocket serverSocket = null;
 		
+		System.out.println("Waiting for client");
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -32,7 +36,7 @@ public class ServerCom extends Thread {
 			System.exit(1);
 		}
 
-		Socket clientSocket = null;
+		//Socket clientSocket = null;
 		
 		try {
 			clientSocket = serverSocket.accept();
@@ -52,10 +56,9 @@ public class ServerCom extends Thread {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		
 		this.start();
-
-		// System.out.println("Connection closed");
+		System.out.println("Connexion with client OK");
 	}
 
 	public void run() {
@@ -67,12 +70,27 @@ public class ServerCom extends Thread {
 			while ((inputLine = in.readLine()) != null) {
 				treatMessageReceived(inputLine);
 			}
+			System.out.println("Connection closed");
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		try {
+			closeConnection();
+		} catch (IOException e) {}
+		
+		connectTo(this.port);
+	}
+	
+	
+	public void closeConnection() throws IOException
+	{
+		in.close();
+		out.close();
+		serverSocket.close();
+		clientSocket.close();
 	}
 	
 	public void treatMessageReceived(String s){
