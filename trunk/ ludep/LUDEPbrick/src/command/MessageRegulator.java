@@ -40,7 +40,7 @@ public class MessageRegulator extends Thread{
 		while(getCm().getNxt().isRunning())
 		{
 			try {
-				Thread.sleep(250);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {}
 			
 			if ( getQueueMessages().size() > 0 )
