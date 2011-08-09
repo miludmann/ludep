@@ -22,8 +22,6 @@ public class Computer implements IServerCom {
 	private ServerCom sc;
 	private FlockHandler fh;
 	
-	public float t1 = 0;
-	public float t2 = 0;
 	
 	//! Constructor
 	public Computer(){
@@ -32,6 +30,7 @@ public class Computer implements IServerCom {
 		
 		getBrickList().add(new Brick(1, this, "Branson", "0016530DB4A2"));
 		getBrickList().add(new Brick(2, this, "Jambon", "0016530DB4FC"));
+		getBrickList().add(new Brick(3, this, "Pampa", "0016530BEA38"));
 		
 		setCont(new Controller(this));
 		
@@ -138,12 +137,6 @@ public class Computer implements IServerCom {
 		for (Brick b : getBrickList()) {
 			if ( b.getId() == id)
 			{
-				if ( t1 == 0 )
-				{
-					System.out.println("GOT IT");
-					t1 = System.currentTimeMillis();
-				}
-				
 				b.setPosition(new Point(posX, posY));
 				b.setOnEdge(isOnLimit);
 				//if ( deg != 181 )
