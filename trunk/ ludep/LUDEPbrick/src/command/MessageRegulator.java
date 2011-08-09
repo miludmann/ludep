@@ -8,7 +8,7 @@ public class MessageRegulator extends Thread{
 
 	// ATTRIBUTES
 	//-----------
-	private Interpretator interpretator;
+	private NXT nxt;
 	private ControlMotor cm;
 	private Queue queueMessages;
 	private int nbCmdReceived;
@@ -19,11 +19,11 @@ public class MessageRegulator extends Thread{
 	
 	// CONSTRUCTORS
 	//-------------
-	public MessageRegulator(Interpretator i)
+	public MessageRegulator(NXT nxt)
 	{
-		setInterpretator(i);
+		setNxt(nxt);
 		setBis(null);
-		setCm(new ControlMotor(getInterpretator().getNxt()));
+		setCm(new ControlMotor(getNxt()));
 		setQueueMessages(new Queue());
 		setCalibrating(false);
 		
@@ -258,6 +258,12 @@ public class MessageRegulator extends Thread{
 		getCm().getNxt().getCl().sendMessage(s);
 	}
 	
+	public void treatMessage(MessageComputer mc){
+		getCm().incID();
+		addMessage(mc);
+	}
+
+	
 	// GETTERS - SETTERS
 	//------------------
 	public void setCm(ControlMotor cm) {
@@ -276,14 +282,6 @@ public class MessageRegulator extends Thread{
 
 	public Queue getQueueMessages() {
 		return queueMessages;
-	}
-
-	public void setInterpretator(Interpretator interpretator) {
-		this.interpretator = interpretator;
-	}
-
-	public Interpretator getInterpretator() {
-		return interpretator;
 	}
 
 	public int getNbCmdReceived() {
@@ -316,5 +314,13 @@ public class MessageRegulator extends Thread{
 
 	public void setCalibrating(boolean calibrating) {
 		this.calibrating = calibrating;
+	}
+
+	public NXT getNxt() {
+		return nxt;
+	}
+
+	public void setNxt(NXT nxt) {
+		this.nxt = nxt;
 	}
 }
