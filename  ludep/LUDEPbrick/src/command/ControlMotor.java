@@ -104,7 +104,7 @@ public class ControlMotor {
 		
 		setSpeedMovement(length);
 		
-		int idCurrentCmd = getNxt().getInterp().getMr().getNbCmdDone();
+		int idCurrentCmd = getNxt().getMr().getNbCmdDone();
 		
 		angle = (angle%360+360)%360;
 		
@@ -203,7 +203,7 @@ public class ControlMotor {
 		
 		while ( (flagA && flagB) || (flagA && flagC) || (flagB && flagC) )
 		{
-			if ( idCurrentCmd != getNxt().getInterp().getMr().getNbCmdReceived() )
+			if ( idCurrentCmd != getNxt().getMr().getNbCmdReceived() )
 			{
 				// this.getNxt().getCl().sendMessage("Aborted cmd " + idCurrentCmd);
 				return;

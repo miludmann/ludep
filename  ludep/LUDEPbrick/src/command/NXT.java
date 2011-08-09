@@ -12,7 +12,7 @@ public class NXT{
 	//-----------
 	private int id;
 	private ComputerLink cl;
-	private Interpretator interp;
+	private MessageRegulator mr;
 	private CompassSensor cs;
 	private Pulsor pulsor;
 	private boolean isRunning;
@@ -22,7 +22,8 @@ public class NXT{
 	public NXT(){
 		setId(-1);
 		setCl(new ComputerLink(this));
-		setInterp(new Interpretator(this));
+		setMr(new MessageRegulator(this));
+		getMr().start();
 		setPulsor(new Pulsor(this));
 		setRunning(true);
 		
@@ -44,7 +45,7 @@ public class NXT{
 			setRunning(false);
 		}
 		
-		getInterp().treatMessage(mc);
+		getMr().treatMessage(mc);
 	}
 	
 	// GETTERS - SETTERS
@@ -65,12 +66,12 @@ public class NXT{
 		this.isRunning = isRunning;
 	}
 
-	public void setInterp(Interpretator interp) {
-		this.interp = interp;
+	public MessageRegulator getMr() {
+		return mr;
 	}
 
-	public Interpretator getInterp() {
-		return interp;
+	public void setMr(MessageRegulator mr) {
+		this.mr = mr;
 	}
 
 	// MAIN
