@@ -14,6 +14,7 @@ public class MessageRegulator extends Thread{
 	private int nbCmdReceived;
 	private int nbCmdDone;
 	private MessageComputer bis;
+	private boolean calibrating;
 	
 	
 	// CONSTRUCTORS
@@ -24,6 +25,7 @@ public class MessageRegulator extends Thread{
 		setBis(null);
 		setCm(new ControlMotor(getInterpretator().getNxt()));
 		setQueueMessages(new Queue());
+		setCalibrating(false);
 		
 		setNbCmdReceived(0);
 		setNbCmdDone(0);
@@ -37,6 +39,10 @@ public class MessageRegulator extends Thread{
 		
 		while(getCm().getNxt().isRunning())
 		{
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {}
+			
 			if ( getQueueMessages().size() > 0 )
 			{
 				setNbCmdDone(getNbCmdDone()+1);
@@ -106,6 +112,7 @@ public class MessageRegulator extends Thread{
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				int i2 = Integer.parseInt(mc.getFragment(i+2));
 				int i3 = Integer.parseInt(mc.getFragment(i+3));
+				getCm().setMaxSpeed(70);
 				getCm().angleMotors(i1,i2);
 				getCm().setRotationPower(i3);
 			}
@@ -117,9 +124,32 @@ public class MessageRegulator extends Thread{
 					boolean b = Boolean.parseBoolean(mc.getFragment(i+1));
 					getCm().changeMotorsRegulation(b);
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Motor Regulation = " + getCm().isRegulateSpeed());
 			}
+			
+			/*
+			if ( si.equalsIgnoreCase("cc") )
+			{
+				if ( isCalibrating() )
+				{
+					getInterpretator().getNxt().getCs().stopCalibration();
+					getCm().stopMotors();
+					setCalibrating(false);
+					getInterpretator().getNxt().getCl().sendMessage("Calibration OFF");
+				}
+				else
+				{
+					getInterpretator().getNxt().getCs().startCalibration();
+					getCm().setMaxSpeed(100);
+					getCm().setPowerA(10);
+					getCm().setPowerB(10);
+					getCm().setPowerC(10);
+					setCalibrating(true);
+					getInterpretator().getNxt().getCl().sendMessage("Calibration ON");
+				}
+			}
+			*/
 			
 			if  ( si.equalsIgnoreCase("wd") )
 			{
@@ -128,7 +158,7 @@ public class MessageRegulator extends Thread{
 					double i1 = Double.parseDouble(mc.getFragment(i+1));
 					getCm().setWheelDiameter(i1);
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Wheel Diameter = " + getCm().getWheelDiameter());
 			}
 			
@@ -146,7 +176,7 @@ public class MessageRegulator extends Thread{
 						getCm().getMotreg().setInRegulation(b);
 					}
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Regulation = " + getCm().getMotreg().isInRegulation());
 			}
 			
@@ -157,7 +187,7 @@ public class MessageRegulator extends Thread{
 					double i1 = Double.parseDouble(mc.getFragment(i+1));
 					getCm().setFactorP(i1);					
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Factor P = " + getCm().getFactorP());
 			}
 			
@@ -168,7 +198,7 @@ public class MessageRegulator extends Thread{
 					double i1 = Double.parseDouble(mc.getFragment(i+1));
 					getCm().setFactorI(i1);					
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Factor I = " + getCm().getFactorI());
 			}
 			
@@ -179,7 +209,7 @@ public class MessageRegulator extends Thread{
 					double i1 = Double.parseDouble(mc.getFragment(i+1));
 					getCm().setReduceI(i1);					
 				}
-				
+				getCm().stopMotors();
 				sendMessageCmp("Factor Reduction I = " + getCm().getReduceI());
 			}
 			
@@ -278,5 +308,13 @@ public class MessageRegulator extends Thread{
 
 	public MessageComputer getBis() {
 		return bis;
+	}
+
+	public boolean isCalibrating() {
+		return calibrating;
+	}
+
+	public void setCalibrating(boolean calibrating) {
+		this.calibrating = calibrating;
 	}
 }

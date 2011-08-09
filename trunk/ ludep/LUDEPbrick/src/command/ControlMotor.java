@@ -8,7 +8,7 @@ import lejos.nxt.MotorPort;
  * Receives direction commands;
  * Allocate the right power for each motor.
  */
-public class ControlMotor{
+public class ControlMotor {
 	
 	// ATTRIBUTES
 	//-----------
@@ -21,6 +21,7 @@ public class ControlMotor{
 	private double factorP; ///< p factor for the pid
 	private double factorI; ///< i factor for the pid
 	private double reduceI; ///< attenuation factor for I, default 1
+	private int maxSpeed; ///< speed of the robot for its movements
 	
 	private MotorRegulator motreg;
 	
@@ -34,18 +35,20 @@ public class ControlMotor{
 		setNxt(nxt);
 		
 		// set regulateMotor to true for each motor
-		changeMotorsRegulation(true);
 		
 		setPowerA(0);
 		setPowerB(0);
 		setPowerC(0);
 		
 		setRotationPower(0);
-		setWheelDiameter(62);
+		setWheelDiameter(45);
 		setIdCmd(0);
-		setFactorP(0);
-		setFactorI(0);
-		setReduceI(1);
+		setFactorP(1);
+		setFactorI(0.5);
+		setReduceI(0.1);
+		
+		changeMotorsRegulation(true);
+		setMaxSpeed(100);
 		
 		setMotreg(new MotorRegulator(this));
 		getMotreg().start();
@@ -61,7 +64,8 @@ public class ControlMotor{
      * @param power power desired for the bot's movement
      */
 	public void angleMotors(double angle, double power){
-				
+		
+		setMaxSpeed(100);
 		angle = (90-angle)%360;
 		if ( angle == 90 || angle == 270 )
 			angle++;
@@ -97,6 +101,8 @@ public class ControlMotor{
 	public void moveAngLen(int angle, int length)
 	{
 		sendMSG("Start cmd " + getIdCmd());
+		
+		setSpeedMovement(length);
 		
 		int idCurrentCmd = getNxt().getInterp().getMr().getNbCmdDone();
 		
@@ -145,17 +151,8 @@ public class ControlMotor{
 		bufferB1 = Math.abs(bufferB1);
 		bufferC1 = Math.abs(bufferC1);
 		
-		/*
-		double bufferA2 = bufferA1;
-		double bufferB2 = bufferB1;
-		double bufferC2 = bufferC1;
-		*/
-		
-		double initTime, endTime, nbIter;
-		
-		/*
-		double noRot, noRotInt;
-		*/
+		// Code for finding the derivate factor in the PID
+		//double initTime, endTime, nbIter;
 		
 		// When two of those flags goes to false, we stop the movement
 		boolean flagA = (bufferA1 != 0);
@@ -195,13 +192,9 @@ public class ControlMotor{
 		setPowerB(pbFinal);
 		setPowerC(pcFinal);
 		
-		/*
-		noRot = 0;
-		noRotInt = 0;
-		*/
-		
-		initTime = System.currentTimeMillis();
-		nbIter = 0;
+		// Code for finding the derivate factor in the PID
+		//initTime = System.currentTimeMillis();
+		//nbIter = 0;
 		
 		sendMSG("Powers "
 				+ getPowerA() + " "
@@ -213,15 +206,10 @@ public class ControlMotor{
 			if ( idCurrentCmd != getNxt().getInterp().getMr().getNbCmdReceived() )
 			{
 				// this.getNxt().getCl().sendMessage("Aborted cmd " + idCurrentCmd);
-				
-				setPowerA(0);
-				setPowerB(0);
-				setPowerC(0);
-				refreshMotors();
-				
 				return;
 			}
-			nbIter++;
+			// Code for finding the derivate factor in the PID
+			//nbIter++;
 			
 			/*
 			noRotInt += noRot;
@@ -256,39 +244,11 @@ public class ControlMotor{
 			
 			
 			refreshMotors();
-			
-			/*
-			this.getNxt().getCl().sendMessage(
-					"buffers "
-					+ (int) (1000*bufferA1/bufferA2) + " "
-					+ (int) (1000*bufferB1/bufferB2) + " "
-					+ (int) (1000*bufferC1/bufferC2) + " "
-					+ (int) bufferA1 + " "
-					+ (int) bufferA2 + " "
-					+ flagA + " "
-					+ (int) bufferB1 + " "
-					+ (int) bufferB2 + " "
-					+ flagB + " "
-					+ (int) bufferC1 + " "
-					+ (int) bufferC2 + " "
-					+ flagC + " "
-					+ "SumRot " + (int) noRot + " "
-					+ "SumRotInt " + (int) noRotInt);
-			*/
-			/*
-			this.getNxt().getCl().sendMessage(
-					"Motors% "
-					+ (int) (1000*(Motor.A.getTachoCount()-angleA)/rotA) + " "
-					+ (int) (1000*(Motor.B.getTachoCount()-angleB)/rotB) + " "
-					+ (int) (1000*(Motor.C.getTachoCount()-angleC)/rotC) + " "
-					+ (int) bufferA2 + " "
-					+ (int) bufferB2 + " "
-					+ (int) bufferC2 );
-			*/
 		}
 		
-		endTime = System.currentTimeMillis();
-		this.getNxt().getCl().sendMessage("DT " + (endTime-initTime)/nbIter);
+		// Code for finding the derivate factor in the PID
+		//endTime = System.currentTimeMillis();
+		//this.getNxt().getCl().sendMessage("DT " + (endTime-initTime)/nbIter);
 		
 		setPowerA(0);
 		setPowerB(0);
@@ -316,6 +276,28 @@ public class ControlMotor{
 				
 		moveAngLen(angle, length);
 	}
+	
+	/**
+	 * Sets the speed of the robot according to the length of the movement
+	 * @param length distance the robot is supposed to move
+	 */
+	public void setSpeedMovement(int length)
+	{
+		if(length>=1050)
+		{
+			setMaxSpeed(100);
+			return;
+		}
+		
+		if(length<=50)
+		{
+			setMaxSpeed(10);
+			return;
+		}
+		
+		setMaxSpeed(10+9*(length-50)/100);
+		return;
+	}
 		
 	/**
 	 * Refresh the parameters given to the motors
@@ -330,30 +312,30 @@ public class ControlMotor{
 		
 		double maxp = Math.max(Math.max(Math.abs(pa), Math.abs(pb)), Math.abs(pc));
 		
-		if ( maxp > 100 )
+		if ( maxp > getMaxSpeed() )
 		{
-			pa = 100*pa/maxp;
-			pb = 100*pb/maxp;
-			pc = 100*pc/maxp;
+			pa = getMaxSpeed()*pa/maxp;
+			pb = getMaxSpeed()*pb/maxp;
+			pc = getMaxSpeed()*pc/maxp;
 		}
 				
 		MotorPort.A.controlMotor((int) pa, 1);
 		MotorPort.B.controlMotor((int) pb, 1);
 		MotorPort.C.controlMotor((int) pc, 1);
 	}
-
-	public void changeMotorsRegulation()
+	
+	public void stopMotors()
 	{
-		changeMotorsRegulation(!isRegulateSpeed());
+		MotorPort.A.controlMotor(0, 4);
+		MotorPort.B.controlMotor(0, 4);
+		MotorPort.C.controlMotor(0, 4);
 	}
 	
-	public void changeMotorsRegulation(boolean b)
+	public void blockMotors()
 	{
-		setRegulateSpeed(b);
-		
-		Motor.A.regulateSpeed(b);
-		Motor.B.regulateSpeed(b);
-		Motor.C.regulateSpeed(b);
+		MotorPort.A.controlMotor(0, 1);
+		MotorPort.B.controlMotor(0, 1);
+		MotorPort.C.controlMotor(0, 1);
 	}
 	
 	public void drawRectangle()
@@ -375,8 +357,20 @@ public class ControlMotor{
 		}
 	}
 	
-	
-	
+    public void changeMotorsRegulation()
+    {
+            changeMotorsRegulation(!isRegulateSpeed());
+    }
+    
+    public void changeMotorsRegulation(boolean b)
+    {
+            setRegulateSpeed(b);
+            
+            Motor.A.regulateSpeed(b);
+            Motor.B.regulateSpeed(b);
+            Motor.C.regulateSpeed(b);
+    }
+    
 	public void incID()
 	{
 		setIdCmd(getIdCmd()+1);
@@ -483,5 +477,13 @@ public class ControlMotor{
 
 	public double getReduceI() {
 		return reduceI;
+	}
+
+	public void setMaxSpeed(int maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
+
+	public int getMaxSpeed() {
+		return maxSpeed;
 	}
 }
