@@ -223,17 +223,17 @@ public class ControlMotor {
 			bufferB1 = Motor.B.getTachoCount() - (angleB + rotB);
 			bufferC1 = Motor.C.getTachoCount() - (angleC + rotC);
 			
-			if ( Math.abs(bufferA1) <= 5 || Math.signum(bufferA1)*signA < 0 )
+			if ( Math.abs(bufferA1) <= 2 || Math.signum(bufferA1)*signA < 0 )
 			{
 				flagA = false;
 			}
 			
-			if ( Math.abs(bufferB1) <= 5 || Math.signum(bufferB1)*signB < 0 )
+			if ( Math.abs(bufferB1) <= 2 || Math.signum(bufferB1)*signB < 0 )
 			{
 				flagB = false;
 			}
 			
-			if ( Math.abs(bufferC1) <= 5 || Math.signum(bufferC1)*signC < 0 )
+			if ( Math.abs(bufferC1) <= 2 || Math.signum(bufferC1)*signC < 0 )
 			{
 				flagC = false;
 			}
