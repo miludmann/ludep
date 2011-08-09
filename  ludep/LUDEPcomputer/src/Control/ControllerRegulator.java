@@ -33,11 +33,10 @@ public class ControllerRegulator extends Thread{
 				setLastRM(getCont().getRightMagnitude());
 				setLastRD(getCont().getRightDirection());
 				refreshDrivingParameters();
-				
 			}
 			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -55,6 +54,7 @@ public class ControllerRegulator extends Thread{
 				(int) getLastLD() + " " +
 				(int) getLastLM() + " " +
 				(int) (getLastRM()*Math.cos(2*Math.PI/360*(450-getLastRD())%360)));
+		
 	}
 	
 	public boolean valueHaveChanged(){

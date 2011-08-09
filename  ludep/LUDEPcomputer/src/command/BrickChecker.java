@@ -1,9 +1,16 @@
 package command;
 
+import java.awt.Point;
+
 public class BrickChecker extends Thread {
 
 	private Brick brick;
 	private int heartBeatChecker;
+	private Point lastPosition;
+	private int samePositionChecker;
+	
+	public int limitHeartBeat = 10;
+	public int limitPositionUnchanged = 10;
 
 	public BrickChecker(Brick brick)
 	{
@@ -16,15 +23,49 @@ public class BrickChecker extends Thread {
 	public void run()
 	{
 		resetCount();
+		samePositionChecker = 0;
 
-		while (getHeartBeatChecker() < 5) {
+		while (getHeartBeatChecker() < limitHeartBeat) {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
 			setHeartBeatChecker(getHeartBeatChecker()+1);
+			
+			// In that part, we check if the brick is still located
+			// We could have done another thread for this purpose
+			// But let's save the world... one thread at a time
+
+			if (lastPosition == null)
+			{
+				lastPosition = brick.getPosition(); 
+			}
+			else
+			{
+				if(lastPosition != null)
+				{
+					if(lastPosition.equals(brick.getPosition()))
+					{
+						samePositionChecker++;
+						
+						if(samePositionChecker == limitPositionUnchanged)
+						{
+							// System.out.println("Brick " + brick.getId() + " has been lost");
+							brick.setPosition(null);
+							lastPosition = null;
+							samePositionChecker = 0;
+						}
+					}
+					else
+					{
+						lastPosition = brick.getPosition();
+						samePositionChecker = 0;
+					}
+				}
+			}
+			
 		}
 
 		brick.closeConnection();

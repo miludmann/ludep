@@ -14,14 +14,16 @@ public class FlockHandler extends Thread{
 	private int nbRobotsFollowing;
 	private int flockDirection;
 	private ArrayList<Integer> optimalRepartition;
+	
+	// private ReachableAreas ra;
 
 	private Brick brickInControl;
 	private ArrayList<Brick> consideredBricks;
 	private ArrayList<Point> desiredPositions;
 	
-	public int proximityThreshold = 150;
-	public int proximityLeader = 650;
-	public float desiredSpace = 800;
+	public int proximityThreshold = 200;
+	public int proximityLeader = 1000;
+	public float desiredSpace = 1200;
 
 	public FlockHandler(Computer c, ArrayList<Brick> brickList)
 	{
@@ -42,9 +44,11 @@ public class FlockHandler extends Thread{
 				e.printStackTrace();
 			}
 
+			checkFlock();
+			
 			if ( null != getComputer().getBrickInControl() )
 			{
-				checkFlock();
+				// checkFlock();
 
 				if ( isLeaderLocated() && sizeFlock > 1 )
 				{
@@ -69,46 +73,127 @@ public class FlockHandler extends Thread{
 			
 			if ( distancePositions(brickPosition, brickInControl.getPosition()) < proximityLeader )
 			{
-				getConsideredBricks().get(i).sendMessage("moveC " 
+				/*
+				getConsideredBricks().get(i).sendMessage("move " 
 						+ ((brickPosition.x-brickInControl.getPosition().x)*100) + " "
 						+ ((brickPosition.y-brickInControl.getPosition().y)*100) );
+						*/
+				
+				double angle = Math.atan2(brickPosition.y-brickInControl.getPosition().y,
+										  brickPosition.x-brickInControl.getPosition().x);
+				
+				desiredPosition.translate((int) (proximityLeader*Math.cos(angle)),
+										  (int) (proximityLeader*Math.sin(angle)));
+				
 			}
 			else
 			{
 				if ( distancePositions(desiredPosition, brickPosition) > proximityThreshold )
 				{
-					
 					if (  getConsideredBricks().get(i).isOnEdge() )
 					{
+						/*
 						getConsideredBricks().get(i).sendMessage("moveC " 
-								+ ((brickInControl.getPosition().x-brickPosition.x)/2) + " "
-								+ ((brickInControl.getPosition().y-brickPosition.y)/2));
+								+ ((brickInControl.getPosition().x-brickPosition.x)/2+brickPosition.x) + " "
+								+ ((brickInControl.getPosition().y-brickPosition.y)/2+brickPosition.y));
+								*/
+						
+						giveBrickDirection(getConsideredBricks().get(i),
+										   new Point((brickInControl.getPosition().x-brickPosition.x)/2+brickPosition.x,
+										   			 (brickInControl.getPosition().y-brickPosition.y)/2+brickPosition.y));
 					}
 					else
 					{
+						
+						/*
 						getConsideredBricks().get(i).sendMessage("moveC " 
 								+ (desiredPosition.x-brickPosition.x) + " "
 								+ (desiredPosition.y-brickPosition.y));
+						*/
+						
+						// System.out.println("A " + brickPosition.toString() + " / " + desiredPosition.toString());
+						
+						giveBrickDirection(getConsideredBricks().get(i), desiredPosition);
 					}
-	
-				/*
-					System.out.println(getConsideredBricks().get(i).getName() + "moveC " 
-						+ (desiredPosition.x-brickPosition.x) + " "
-						+ (desiredPosition.y-brickPosition.y));
-				*/
 				}
 				else
 				{
 					getConsideredBricks().get(i).sendMessage("s");
 				}
 			}
-			if ( getComputer().t2 == 0 )
+		}
+	}
+
+	public void giveBrickDirection(Brick b, Point p)
+	{
+		while( distancePositions(b.getPosition(), p) > proximityThreshold )
+		{
+			if(movementPossible(b, p))
 			{
-				getComputer().t2 = System.currentTimeMillis();
-				System.out.println("Time = " + (getComputer().t2 - getComputer().t1) );
+				b.setGoToPostion(p);
+				System.out.println("= " + b.getPosition().toString() + " / " + b.getGoToPostion().toString());
+				return;
+			}
+			else
+			{
+				p.translate((-p.x+b.getPosition().x)/3,
+							(-p.y+b.getPosition().y)/3);
 			}
 		}
 	}
+	
+	public boolean movementPossible(Brick b, Point p)
+	{
+		Point start = b.getPosition();
+		Point end = p;
+		
+		for (Brick brick : getConsideredBricks()) {
+			if (! b.equals(brick) )
+			{
+				if ( crossedMovements(start, end, brick.getPosition(), brick.getGoToPostion()) )
+					return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean crossedMovements(Point PA, Point PB, Point PC, Point PD)
+	{
+		if ( PD == null )
+		{
+			return Geometry.distance(PA.x, PA.y, PB.x, PB.y, PC.x, PC.y) < proximityThreshold;
+		}
+		
+		
+		if ( Geometry.isLineIntersectingLine(PA.x, PA.y,
+											 PB.x, PB.y,
+											 PC.x, PC.y,
+											 PD.x, PD.y) )
+		{
+			return true;
+		}
+		
+		if ( Geometry.distance(PA.x, PA.y, PB.x, PB.y, PC.x, PC.y) < proximityThreshold )
+		{
+			return true;
+		}
+		if ( Geometry.distance(PA.x, PA.y, PB.x, PB.y, PD.x, PD.y) < proximityThreshold )
+		{
+			return true;
+		}
+		if ( Geometry.distance(PC.x, PC.y, PD.x, PD.y, PA.x, PA.y) < proximityThreshold )
+		{
+			return true;
+		}
+		if ( Geometry.distance(PC.x, PC.y, PD.x, PD.y, PB.x, PB.y) < proximityThreshold )
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	public ArrayList<Integer> findOptimalMovements()
 	{
@@ -121,6 +206,8 @@ public class FlockHandler extends Thread{
 			result.add(i);
 		}
 		*/
+		
+		// setRa(new ReachableAreas(this));
 		
 		for (int i = 0; i < getConsideredBricks().size(); i++) {
 			
@@ -207,6 +294,7 @@ public class FlockHandler extends Thread{
 			if( b.isConnectionEstablished() && b.getPosition() != null )
 			{
 				nbFlock++;
+				b.setGoToPostion(null);
 
 				if ( b.equals(getComputer().getBrickInControl()) )
 					brickInControl = b;
@@ -215,8 +303,8 @@ public class FlockHandler extends Thread{
 			}
 		}
 
-		this.sizeFlock = nbFlock;
-		this.nbRobotsFollowing = nbFlock - 1;
+		setSizeFlock(nbFlock);
+		setNbRobotsFollowing(nbFlock - 1);
 	}
 
 	public Computer getComputer() {
@@ -240,6 +328,10 @@ public class FlockHandler extends Thread{
 	}
 
 	public void setSizeFlock(int sizeFlock) {
+		
+		if (sizeFlock != this.sizeFlock)
+			System.out.println("Size Flock: " + sizeFlock);
+		
 		this.sizeFlock = sizeFlock;
 	}
 
@@ -282,6 +374,4 @@ public class FlockHandler extends Thread{
 	public void setOptimalRepartition(ArrayList<Integer> optimalRepartition) {
 		this.optimalRepartition = optimalRepartition;
 	}
-
-
 }

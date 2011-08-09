@@ -14,7 +14,6 @@ public class Brick implements MessageListenerInterface {
 	
 	// ATTRIBUTES
 	//-----------
-	
 	private String name;
 	private String address;
 	private MessageFramework mF;
@@ -22,6 +21,7 @@ public class Brick implements MessageListenerInterface {
 	private Computer cmp;
 	private boolean connectionEstablished;
 	private Point position;
+	private Point goToPostion;
 	private BrickGUI brickGUI;
 	private int id;
 	private boolean flag;
@@ -102,13 +102,33 @@ public class Brick implements MessageListenerInterface {
 	
 	public void receivedNewMessage(LIMessage msg) {
 		analyseMsg(msg.getPayload());
-		// TODO: check or uncheck to see the messages of the brick 
+		// comment or not to see the messages of the brick 
 		// System.out.println("BRICK: " + msg.getPayload());
 	}
 
 	public void sendMessage(String s){
 		if ( isConnectionEstablished() )
 			getmF().SendMessage(new LIMessage(LIMessageType.Command, s));
+	}
+	
+	public void moveCart(int x, int y)
+	{
+		sendMessage("moveC " + x + " " + y);
+	}
+	
+	public void moveCart(int x, int y, int speed)
+	{
+		sendMessage("moveC " + x + " " + y + " " + speed);
+	}
+	
+	public void move(int angle, int length)
+	{
+		sendMessage("move " + angle + " " + length);
+	}
+	
+	public void move(int angle, int length, int speed)
+	{
+		sendMessage("move " + angle + " " + length + " " + speed);
 	}
 	
 	public void setLeader(){
@@ -235,5 +255,19 @@ public class Brick implements MessageListenerInterface {
 
 	public void setOnEdge(boolean isOnEdge) {
 		this.isOnEdge = isOnEdge;
+	}
+
+	public Point getGoToPostion() {
+		return goToPostion;
+	}
+
+	public void setGoToPostion(Point goToPostion) {
+		this.goToPostion = goToPostion;
+		
+		if (goToPostion != null)
+		{
+			moveCart(goToPostion.x-getPosition().x, 
+					 goToPostion.y-getPosition().y);
+		}
 	}
 }
