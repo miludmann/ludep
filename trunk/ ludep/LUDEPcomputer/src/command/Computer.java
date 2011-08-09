@@ -21,7 +21,10 @@ public class Computer implements IServerCom {
 	private MainGUI mg;
 	private ServerCom sc;
 	private FlockHandler fh;
-
+	
+	public float t1 = 0;
+	public float t2 = 0;
+	
 	//! Constructor
 	public Computer(){
 		
@@ -37,12 +40,19 @@ public class Computer implements IServerCom {
 		setBrickInControl(null);
 		
 		setFh(new FlockHandler(this, getBrickList()));
-		setSc(new ServerCom(4242, this));
+		
+		restartServer();
 	}
 	
 	
 	// METHODS
 	//--------
+	public void restartServer()
+	{
+		setSc(new ServerCom(4242, this));
+	}
+	
+	
 	public void msgBricks(String s){
 		
 		if ( getBrickList().size() == 0 )
@@ -115,17 +125,27 @@ public class Computer implements IServerCom {
 		
 		String splitMessage[] = s.split(" ");
 		
-		int id, posX, posY, deg;
+		int id, posX, posY, degRobot, degDrone;
+		boolean isOnLimit;
 		
 		id = Integer.parseInt(splitMessage[1]);
 		posX = Integer.parseInt(splitMessage[4]);
 		posY = Integer.parseInt(splitMessage[6]);
-		deg = Integer.parseInt(splitMessage[8]);
+		degRobot = Integer.parseInt(splitMessage[8]);
+		degDrone = Integer.parseInt(splitMessage[10]);
+		isOnLimit = Boolean.parseBoolean(splitMessage[12]);
 		
 		for (Brick b : getBrickList()) {
 			if ( b.getId() == id)
 			{
+				if ( t1 == 0 )
+				{
+					System.out.println("GOT IT");
+					t1 = System.currentTimeMillis();
+				}
+				
 				b.setPosition(new Point(posX, posY));
+				b.setOnEdge(isOnLimit);
 				//if ( deg != 181 )
 				//	b.setDirection(deg);
 				return;

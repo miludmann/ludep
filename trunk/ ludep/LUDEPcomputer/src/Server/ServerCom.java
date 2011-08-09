@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import command.Computer;
+
 public class ServerCom extends Thread {
 
 	private BufferedReader in;
@@ -35,8 +37,6 @@ public class ServerCom extends Thread {
 			System.err.println("Could not listen on port: " + port);
 			System.exit(1);
 		}
-
-		//Socket clientSocket = null;
 		
 		try {
 			clientSocket = serverSocket.accept();
@@ -81,7 +81,9 @@ public class ServerCom extends Thread {
 			closeConnection();
 		} catch (IOException e) {}
 		
-		connectTo(this.port);
+		this.interrupt();
+		
+		((Computer) getIsc()).restartServer();
 	}
 	
 	

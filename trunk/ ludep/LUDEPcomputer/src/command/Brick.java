@@ -27,6 +27,7 @@ public class Brick implements MessageListenerInterface {
 	private boolean flag;
 	private int direction;
 	private BrickChecker bc;
+	private boolean isOnEdge;
 	
 	// CONSTRUCTORS
 	//-------------
@@ -38,6 +39,7 @@ public class Brick implements MessageListenerInterface {
 		setAddress(macAddress);
 		setPosition(null);
 		setDirection(90);
+		setOnEdge(false);
 
 		setBrickGUI(new BrickGUI(this));
 	}
@@ -225,5 +227,13 @@ public class Brick implements MessageListenerInterface {
 
 	public BrickChecker getBc() {
 		return bc;
+	}
+
+	public boolean isOnEdge() {
+		return isOnEdge;
+	}
+
+	public void setOnEdge(boolean isOnEdge) {
+		this.isOnEdge = isOnEdge;
 	}
 }
