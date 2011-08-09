@@ -100,8 +100,7 @@ public class ControlMotor {
 	 */
 	public void moveAngLen(int angle, int length)
 	{
-		sendMSG("Start cmd " + getIdCmd());
-		
+		// sendMSG("Start cmd " + getIdCmd());
 		setSpeedMovement(length);
 		
 		int idCurrentCmd = getNxt().getMr().getNbCmdDone();
@@ -195,11 +194,12 @@ public class ControlMotor {
 		// Code for finding the derivate factor in the PID
 		//initTime = System.currentTimeMillis();
 		//nbIter = 0;
-		
+		/*
 		sendMSG("Powers "
 				+ getPowerA() + " "
 				+ getPowerB() + " "
 				+ getPowerC());
+		*/
 		
 		while ( (flagA && flagB) || (flagA && flagC) || (flagB && flagC) )
 		{
@@ -223,17 +223,17 @@ public class ControlMotor {
 			bufferB1 = Motor.B.getTachoCount() - (angleB + rotB);
 			bufferC1 = Motor.C.getTachoCount() - (angleC + rotC);
 			
-			if ( Math.abs(bufferA1) <= 2 || Math.signum(bufferA1)*signA < 0 )
+			if ( Math.abs(bufferA1) <= 5 || Math.signum(bufferA1)*signA < 0 )
 			{
 				flagA = false;
 			}
 			
-			if ( Math.abs(bufferB1) <= 2 || Math.signum(bufferB1)*signB < 0 )
+			if ( Math.abs(bufferB1) <= 5 || Math.signum(bufferB1)*signB < 0 )
 			{
 				flagB = false;
 			}
 			
-			if ( Math.abs(bufferC1) <= 2 || Math.signum(bufferC1)*signC < 0 )
+			if ( Math.abs(bufferC1) <= 5 || Math.signum(bufferC1)*signC < 0 )
 			{
 				flagC = false;
 			}
@@ -257,7 +257,8 @@ public class ControlMotor {
 		
 		refreshMotors();
 		
-		this.getNxt().getCl().sendMessage("Finished cmd " + idCurrentCmd);
+		// this.getNxt().getCl().sendMessage("Finished cmd " + idCurrentCmd);
+		
 		incID();
 	}
 	
@@ -276,6 +277,7 @@ public class ControlMotor {
 				
 		moveAngLen(angle, length);
 	}
+	
 	
 	/**
 	 * Sets the speed of the robot according to the length of the movement
@@ -298,6 +300,7 @@ public class ControlMotor {
 		setMaxSpeed(10+9*(length-50)/100);
 		return;
 	}
+	
 		
 	/**
 	 * Refresh the parameters given to the motors

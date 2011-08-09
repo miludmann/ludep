@@ -40,7 +40,7 @@ public class MessageRegulator extends Thread{
 		while(getCm().getNxt().isRunning())
 		{
 			try {
-				Thread.sleep(10);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {}
 			
 			if ( getQueueMessages().size() > 0 )
@@ -112,7 +112,7 @@ public class MessageRegulator extends Thread{
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				int i2 = Integer.parseInt(mc.getFragment(i+2));
 				int i3 = Integer.parseInt(mc.getFragment(i+3));
-				getCm().setMaxSpeed(70);
+				getCm().setMaxSpeed(60);
 				getCm().angleMotors(i1,i2);
 				getCm().setRotationPower(i3);
 			}
@@ -242,10 +242,28 @@ public class MessageRegulator extends Thread{
 				getCm().moveAngLen(i1, i2);
 			}
 			
+			if ( si.equalsIgnoreCase("move") && (nbFrag > i+3) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				int i2 = Integer.parseInt(mc.getFragment(i+2));
+				int i3 = Integer.parseInt(mc.getFragment(i+3));
+				getCm().setMaxSpeed(i3);
+				getCm().moveAngLen(i1, i2);
+			}
+			
 			if ( si.equalsIgnoreCase("moveC") && (nbFrag > i+2) )
 			{
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				int i2 = Integer.parseInt(mc.getFragment(i+2));
+				getCm().moveCart(i1, i2);
+			}
+			
+			if ( si.equalsIgnoreCase("moveC") && (nbFrag > i+3) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+				int i2 = Integer.parseInt(mc.getFragment(i+2));
+				int i3 = Integer.parseInt(mc.getFragment(i+3));
+				getCm().setMaxSpeed(i3);
 				getCm().moveCart(i1, i2);
 			}
 		}
