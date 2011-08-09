@@ -3,6 +3,7 @@ package command;
 import java.io.IOException;
 
 import lejos.nxt.Button;
+import lejos.nxt.addon.CompassSensor;
 import tools.MessageComputer;
 
 public class NXT{
@@ -12,6 +13,7 @@ public class NXT{
 	private int id;
 	private ComputerLink cl;
 	private Interpretator interp;
+	private CompassSensor cs;
 	private Pulsor pulsor;
 	private boolean isRunning;
 	
@@ -23,6 +25,8 @@ public class NXT{
 		setInterp(new Interpretator(this));
 		setPulsor(new Pulsor(this));
 		setRunning(true);
+		
+		// setCs(new CompassSensor(SensorPort.S1));
 	}
 	
 	// METHODS
@@ -89,6 +93,14 @@ public class NXT{
 		return id;
 	}
 
+	public void setCs(CompassSensor cs) {
+		this.cs = cs;
+	}
+
+	public CompassSensor getCs() {
+		return cs;
+	}
+	
 	public void setPulsor(Pulsor pulsor) {
 		this.pulsor = pulsor;
 	}
