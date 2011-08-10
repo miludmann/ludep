@@ -76,8 +76,8 @@ public class Controller{
 
 			public void buttonB(boolean pressed){
 				if ( pressed )
-					//getComp().send("stop");
-					getComp().send("cc");
+					getComp().send("stop");
+					// getComp().send("cc");
 			}
 
 			public void buttonX(boolean pressed){

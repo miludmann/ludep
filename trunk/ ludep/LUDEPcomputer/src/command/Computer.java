@@ -31,6 +31,7 @@ public class Computer implements IServerCom {
 		getBrickList().add(new Brick(1, this, "Branson", "0016530DB4A2"));
 		getBrickList().add(new Brick(2, this, "Jambon", "0016530DB4FC"));
 		getBrickList().add(new Brick(3, this, "Pampa", "0016530BEA38"));
+		getBrickList().add(new Brick(4, this, "Poule", "00165312EFC2"));
 		
 		setCont(new Controller(this));
 		

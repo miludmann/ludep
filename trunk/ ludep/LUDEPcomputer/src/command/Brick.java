@@ -29,6 +29,8 @@ public class Brick implements MessageListenerInterface {
 	private BrickChecker bc;
 	private boolean isOnEdge;
 	
+	private int stateBehavior = 0;
+	
 	// CONSTRUCTORS
 	//-------------
 	public Brick(int id, Computer c, String name, String macAddress){
@@ -227,6 +229,9 @@ public class Brick implements MessageListenerInterface {
 
 	public void setPosition(Point position) {
 		this.position = position;
+		
+		if (position == null)
+			sendMessage("s");
 	}
 
 	public Point getPosition() {
@@ -269,5 +274,17 @@ public class Brick implements MessageListenerInterface {
 			moveCart(goToPostion.x-getPosition().x, 
 					 goToPostion.y-getPosition().y);
 		}
+	}
+
+	public int getStateBehavior() {
+		return stateBehavior;
+	}
+
+	public void setStateBehavior(int stateBehavior) {
+		
+		if (  this.stateBehavior != stateBehavior )
+			sendMessage("bip " + stateBehavior);
+		
+		this.stateBehavior = stateBehavior;
 	}
 }
