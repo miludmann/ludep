@@ -1,5 +1,5 @@
 planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Intel_Linux_2.6.38-10-generic_GNU_Linux_gcc_4.5.2/UI/planner.cpp.d: \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/UI/planner.cpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/UI/planner.cpp \
  ../VP_Os/vp_os_print.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/bits/predefs.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
@@ -10,8 +10,8 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5.2/include/stdarg.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
  /usr/include/bits/stdio.h /usr/include/bits/stdio2.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/ardrone_api.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/ardrone_common_config.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/ardrone_api.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/ardrone_common_config.h \
  ../ATcodec/ATcodec_api.h ../VP_Os/vp_os_types.h ../VP_Os/vp_os.h \
  ../VP_Os/vp_os_rtmon.h ..//VP_Os/linux/vp_os_serial.h \
  /usr/include/termios.h /usr/include/bits/termios.h \
@@ -26,20 +26,20 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  /usr/include/bits/setjmp.h ../ATcodec/ATcodec.h \
  ../ATcodec/ATcodec_Memory.h ../ATcodec/ATcodec_Error.h \
  ../ATcodec/ATcodec_Tree.h ../ATcodec/ATcodec_Buffer.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/navdata_common.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/config.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/generated_custom.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/autoconf.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/vision_common.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/Maths/maths.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/navdata_common.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/config.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/generated_custom.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/autoconf.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/vision_common.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/Maths/maths.h \
  /usr/include/math.h /usr/include/bits/huge_val.h \
  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
  /usr/include/bits/inf.h /usr/include/bits/nan.h \
  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
  /usr/include/bits/mathinline.h \
  /usr/lib/i386-linux-gnu/gcc/i686-linux-gnu/4.5.2/include/float.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/Maths/matrices.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/navdata_keys.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/Maths/matrices.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/navdata_keys.h \
  ../VP_Os/vp_os_malloc.h /usr/include/assert.h /usr/include/string.h \
  /usr/include/bits/string3.h /usr/include/stdlib.h \
  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
@@ -47,8 +47,8 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  /usr/include/bits/select.h /usr/include/bits/sigset.h \
  /usr/include/sys/sysmacros.h /usr/include/alloca.h \
  /usr/include/bits/stdlib.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/led_animation.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/config_keys.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/led_animation.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Common/config_keys.h \
  ../../VLIB/../VLIB/video_codec.h ../../VLIB/../VLIB/video_controller.h \
  ../VP_Api/vp_api_picture.h /usr/include/libavutil/avutil.h \
  /usr/include/libavutil/common.h /usr/include/ctype.h \
@@ -70,19 +70,19 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  ../../VLIB/../VLIB/video_picture_defines.h \
  ../../VLIB/../VLIB/video_gob.h ../../VLIB/../VLIB/video_macroblock.h \
  ../../VLIB/../VLIB/P264/p264_common.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/ardrone_tool_configuration.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/ardrone_tool_configuration.h \
  ../VP_Os/vp_os_signal.h ..//VP_Os/linux/vp_os_signal_dep.h \
  ../VP_Api/vp_api_thread_helper.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control_ack.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control_configuration.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/iniparser3.0b/src/iniparser.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/iniparser3.0b/src/dictionary.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control_ack.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_control_configuration.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/iniparser3.0b/src/iniparser.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/iniparser3.0b/src/dictionary.h \
  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
  /usr/include/bits/environments.h /usr/include/bits/confname.h \
  /usr/include/getopt.h /usr/include/bits/unistd.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/ardrone_tool.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/UI/planner.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/ardrone_tool.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/UI/planner.hpp \
  /usr/include/opencv/highgui.h /usr/include/opencv/cxcore.h \
  /usr/include/opencv/cxtypes.h /usr/include/opencv/cxerror.h \
  /usr/include/opencv/cvver.h /usr/include/opencv/cxcore.hpp \
@@ -156,8 +156,8 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  /usr/include/c++/4.5/bits/vector.tcc \
  /usr/include/opencv/cxoperations.hpp /usr/include/opencv/cxmat.hpp \
  /usr/include/opencv/cxflann.h /usr/include/opencv/highgui.hpp \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.hpp \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/client.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/client.hpp \
  /usr/include/sys/socket.h /usr/include/sys/uio.h /usr/include/bits/uio.h \
  /usr/include/bits/socket.h /usr/include/bits/sockaddr.h \
  /usr/include/i386-linux-gnu/asm/socket.h \
@@ -169,13 +169,13 @@ planner.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Inte
  /usr/include/bits/netdb.h /usr/include/c++/4.5/deque \
  /usr/include/c++/4.5/bits/stl_deque.h \
  /usr/include/c++/4.5/bits/deque.tcc \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/Navdata/NavDataContainer.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/Navdata/NavDataContainer.hpp \
  /usr/include/strings.h /usr/include/sys/time.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Navdata/ardrone_navdata_client.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_navdata_control.h \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Navdata/ardrone_general_navdata.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Navdata/ardrone_navdata_client.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Control/ardrone_navdata_control.h \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../../ARDrone_API/ardronelib/Soft/Lib/ardrone_tool/Navdata/ardrone_general_navdata.h \
  /usr/include/c++/4.5/iostream \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/Tools/coopertools.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/Tools/coopertools.hpp \
  /usr/include/c++/4.5/fstream /usr/include/c++/4.5/bits/codecvt.h \
  /usr/include/c++/4.5/cstdio \
  /usr/include/c++/4.5/i686-linux-gnu/bits/basic_file.h \
