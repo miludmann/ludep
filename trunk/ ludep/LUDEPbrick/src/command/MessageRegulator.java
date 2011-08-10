@@ -2,6 +2,8 @@ package command;
 
 import java.util.Queue;
 
+import lejos.nxt.Sound;
+
 import tools.MessageComputer;
 
 public class MessageRegulator extends Thread{
@@ -112,7 +114,7 @@ public class MessageRegulator extends Thread{
 				int i1 = Integer.parseInt(mc.getFragment(i+1));
 				int i2 = Integer.parseInt(mc.getFragment(i+2));
 				int i3 = Integer.parseInt(mc.getFragment(i+3));
-				getCm().setMaxSpeed(60);
+				getCm().setMaxSpeed(80);
 				getCm().angleMotors(i1,i2);
 				getCm().setRotationPower(i3);
 			}
@@ -127,6 +129,16 @@ public class MessageRegulator extends Thread{
 				getCm().stopMotors();
 				sendMessageCmp("Motor Regulation = " + getCm().isRegulateSpeed());
 			}
+			
+			if ( si.equalsIgnoreCase("bip") && ( nbFrag > i+1 ) )
+			{
+				int i1 = Integer.parseInt(mc.getFragment(i+1));
+
+				Sound.playTone(200+500*getNxt().getId(), 100*i1, 80);
+
+			}
+			
+			
 			
 			/*
 			if ( si.equalsIgnoreCase("cc") )

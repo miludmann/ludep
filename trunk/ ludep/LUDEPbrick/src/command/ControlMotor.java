@@ -65,7 +65,8 @@ public class ControlMotor {
      */
 	public void angleMotors(double angle, double power){
 		
-		setMaxSpeed(100);
+		// setMaxSpeed(100);
+		
 		angle = (90-angle)%360;
 		if ( angle == 90 || angle == 270 )
 			angle++;
