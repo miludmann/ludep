@@ -559,6 +559,7 @@ void ColorMatcher::addDefaultRobotSet()
 	addRobot(165, 0, 0, 255, 255, 145); 	//blue
 	addRobot(0, 143, 0, 140, 255, 144); 	//dark green
 	addRobot(0, 146, 175, 145, 255, 255); 	//yellow
+	cout << getRobotsNumber() << " robot(s) added for the camera detection." << endl;
 }
 
 ColorMatcher::ColorMatcher(bool withWebcam, bool video)
