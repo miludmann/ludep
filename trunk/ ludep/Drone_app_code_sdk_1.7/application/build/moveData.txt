@@ -1,0 +1,1 @@
+time altitude euler_theta euler_phi xval_tmp yval_tmp xval yval xnav ynav kp ki kd
