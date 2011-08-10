@@ -1,5 +1,5 @@
 colorMatcher.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg_Intel_Linux_2.6.38-10-generic_GNU_Linux_gcc_4.5.2/ColorMatching/colorMatcher.cpp.d: \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.cpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.cpp \
  /usr/include/stdio.h /usr/include/features.h /usr/include/bits/predefs.h \
  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
  /usr/include/gnu/stubs.h /usr/include/gnu/stubs-32.h \
@@ -112,8 +112,8 @@ colorMatcher.o ../../Soft/Build/targets_versions/linux_sdk_demo_PROD_MODE_ffmpeg
  /usr/include/opencv/cxflann.h /usr/include/opencv/cvtypes.h \
  /usr/include/opencv/cv.hpp /usr/include/opencv/cvcompat.h \
  /usr/include/c++/4.5/iostream \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.hpp \
- /home/bacardi/Dropbox/Master_Thesis/Drone_code/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/client.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/colorMatcher.hpp \
+ /home/bacardi/Master_Thesis/ludep/ludep/Drone_app_code_sdk_1.7/application/build/../Sources/ColorMatching/client.hpp \
  /usr/include/sys/socket.h /usr/include/sys/uio.h /usr/include/bits/uio.h \
  /usr/include/bits/socket.h /usr/include/bits/sockaddr.h \
  /usr/include/i386-linux-gnu/asm/socket.h \
