@@ -503,7 +503,7 @@ void ColorMatcher::setDefaultValues()
 	//string ipHost_str ("127.0.0.1");
 	//IPHOST = ipHost_str.c_str();
 	IPHOST = "10.11.106.251";
-	
+	//IPHOST = "10.11.110.230";
 	CONNECTION = 0; //Socket connection switch
 	CAM_DISTANCE_TO_FIELD = 274; //Physically meassured
 	if(webcamUsed)
@@ -555,10 +555,18 @@ void ColorMatcher::addDefaultRobotSet()
 {
 	//Default values that work well in our testing environnment 
 	//They will be different in any other setup. GUI adjustable
+	
+	//Office Values
 	addRobot(0, 0, 141, 137, 138, 255);		//red
 	addRobot(165, 0, 0, 255, 255, 145); 	//blue
-	addRobot(0, 143, 0, 140, 255, 144); 	//dark green
+	addRobot(0, 143, 0, 132, 255, 144); 	//dark green
 	addRobot(0, 146, 175, 145, 255, 255); 	//yellow
+	
+	//LEGOLAB Values
+	//addRobot(0, 0, 141, 137, 138, 255);		//red
+	//addRobot(164, 0, 0, 255, 152, 145); 	//blue
+	//addRobot(0, 122, 0, 111, 255, 135); 	//dark green
+	//addRobot(0, 146, 175, 145, 255, 255); 	//yellow
 	cout << getRobotsNumber() << " robot(s) added for the camera detection..." << endl;
 }
 
