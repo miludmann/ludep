@@ -7,7 +7,7 @@
 
 int main( int argc, char** argv ) {
 	
-	ColorMatcher* colorMatcher = new ColorMatcher(true, true, false);
+	ColorMatcher* colorMatcher = new ColorMatcher(true, true);
 	IplImage* frame;
 	
 	while ((frame = colorMatcher->getCurrentFrame()) != NULL) {

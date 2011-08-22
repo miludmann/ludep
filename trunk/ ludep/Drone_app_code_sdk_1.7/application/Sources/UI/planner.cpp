@@ -267,23 +267,27 @@ void *Planner_Thread(void *params)
                 convertToPolarCoordinates(xval, yval, &radius, &theta);
                 //printf("xc[0], yc[0], r, theta: (%d, %d); (%-.1f, %-.1f) e_theta = %-.1f ; e_phi = %-.1f\n", xval, yval, radius, (theta* 180 / M_PI), euler_theta, euler_phi);
                 
-                // Proportionnal Integrator Controller
-                // Polar coordinates PID
-                radiusError = radius; // we want radius = 0
-                radiusIntegral = dampen * radiusIntegral + radiusError;
-                radiusDerivative = radiusError - radiusLastError;
-                radiusMove = self->kp * radiusError + self->ki * radiusIntegral + self->kd * radiusDerivative;
-                if(abs(radiusMove) > 25000) radiusMove = radiusMove/abs(radiusMove) * 25000;
-                radiusLastError = radiusError;
-                setDirection(false, theta, radiusMove, &self->dpitch, &self->droll);
-  
-                // Save datalog
-				final = clock() - dataClk;
-				dataClkPrint = (double)final/ ((double)TICKS_PER_SEC);
-				//fprintf(moveFile, "%-.2f %f %f %d %d %d %d %d %d %d\n", dataClkPrint, euler_theta, euler_phi, (int) altitudeMove,(int) radiusMove, (int) self->kp * radiusError, (int) self->ki * radiusIntegral, (int) self->kd * radiusDerivative, (int) radius, (int) (theta* 180 / M_PI));
-				fprintf(moveFile, "%-.2f %d %f %f %d %d %d %d %d %d %-.1f %-.1f %-.1f\n", dataClkPrint, ALTITUDE, euler_theta, euler_phi, xval_tmp, yval_tmp, xval, yval, xnav, ynav, self->kp, self->ki, self->kd);
-				
-                //ardrone_at_set_led_animation(BLINK_ORANGE, 10, (float) 0.01);
+                if(sqrt(xvalPrevious * xvalPrevious + yvalPrevious * yvalPrevious) <= 30) // We are really close to the target (radius in pixels < constant)
+                	self->hover =1; // now hover using the embedded hovering algorithm
+                else {
+					// Proportionnal Integrator Controller
+					// Polar coordinates PID
+					radiusError = radius; // we want radius = 0
+					radiusIntegral = dampen * radiusIntegral + radiusError;
+					radiusDerivative = radiusError - radiusLastError;
+					radiusMove = self->kp * radiusError + self->ki * radiusIntegral + self->kd * radiusDerivative;
+					if(abs(radiusMove) > 25000) radiusMove = radiusMove/abs(radiusMove) * 25000;
+					radiusLastError = radiusError;
+					setDirection(false, theta, radiusMove, &self->dpitch, &self->droll);
+	  
+					// Save datalog
+					final = clock() - dataClk;
+					dataClkPrint = (double)final/ ((double)TICKS_PER_SEC);
+					//fprintf(moveFile, "%-.2f %f %f %d %d %d %d %d %d %d\n", dataClkPrint, euler_theta, euler_phi, (int) altitudeMove,(int) radiusMove, (int) self->kp * radiusError, (int) self->ki * radiusIntegral, (int) self->kd * radiusDerivative, (int) radius, (int) (theta* 180 / M_PI));
+					fprintf(moveFile, "%-.2f %d %f %f %d %d %d %d %d %d %-.1f %-.1f %-.1f\n", dataClkPrint, ALTITUDE, euler_theta, euler_phi, xval_tmp, yval_tmp, xval, yval, xnav, ynav, self->kp, self->ki, self->kd);
+					
+					//ardrone_at_set_led_animation(BLINK_ORANGE, 10, (float) 0.01);
+                }
             } else {
                 final = clock() - init;
                 time_lost = (double)final / ((double)TICKS_PER_SEC);

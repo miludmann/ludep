@@ -192,6 +192,7 @@ C_RESULT open_gamepad(void)
 #define yawfactor 1.4
 #define zfactor 1.4
 static int32_t x = 0, y = 0, yaw = 0, z = 0;
+int hoverFlag = 0;
 PARAMETER currentParam = KP;
 
 C_RESULT update_gamepad(void)
@@ -274,24 +275,16 @@ C_RESULT update_gamepad(void)
 	    }
           break;
 
-        case 3 : //3rd button (360 Y-Button) to dump image
+        case 3 : //3rd button (360 Y-Button) to enter hovering mode
 	  if(js_e_buffer[idx].value == 1) 
 	  {
-	    char filename[256];
-	    timeval t;
-	    gettimeofday(&t, NULL);
-	    sprintf(filename, "%d.%06d.bmp", (int)t.tv_sec, (int)t.tv_usec);
-	    if(frontImgStream != NULL && cvSaveImage(filename, cvCloneImage(frontImgStream)))
-	      printf("Front Image dumped to %s\n", filename);
-	    else
-	      printf("Error dumping image.\n");
-	    sprintf(filename, "%d.%06dbot.bmp", (int)t.tv_sec, (int)t.tv_usec);
-	    if(bottomImgStream != NULL && cvSaveImage(filename, cvCloneImage(bottomImgStream)))
-	      printf("Bottom Image dumped to %s\n", filename);
-	    else
-	      printf("Error dumping image.\n");
-          }
-          break;
+	  	    hoverFlag = 0;
+	  	    planner->hover = (planner->hover == 1) ? 0 : 1;
+            if(planner->hover == 1) PRINT("Hovering mode activated.\n"); else PRINT("Hovering mode disabled.\n");
+            planner->enabled = false;
+            planner->reset = true; // reset algorithm parameters
+	  }
+	  break;
 
         case 2 : //2nd button (360 X-Button) for camera toggle
 	  if(js_e_buffer[idx].value == 1) ardrone_at_zapC();
@@ -314,7 +307,7 @@ C_RESULT update_gamepad(void)
           }	  			
   	  break;
   			
-        case 0 : //Joystick trigger/360 A-button enables/disables algorithms
+        case 0 : //A-button enables/disables algorithms
           if(js_e_buffer[idx].value == 1 && planner != NULL)
           {
           	planner->enabled = planner->enabled ? FALSE : TRUE;
@@ -464,10 +457,16 @@ C_RESULT update_gamepad(void)
   * yaw : z-axis (rad/s) (-25000, +25000)
   */
   
-  if(refresh_values && (planner == NULL || !planner->enabled))// Axis values to refresh
+  if(refresh_values && (planner == NULL || (!planner->enabled && planner->hover==0)))// Axis values to refresh
   {
     ardrone_at_set_progress_cmdC(1, y, x, z, yaw); //range checking done in C wrapper
     //PRINT("Pitch:%3d Roll:%3d Gaz:%3d Yaw:%3d\n", y, x, z, yaw);
+  } 
+  else if(planner->hover == 1 && hoverFlag == 0)
+  {
+    PRINT("HOVERING\n");
+    hoverFlag = 1;
+  	ardrone_at_set_progress_cmdC(0, 0, 0, 0, 0);
   }
   
   return C_OK;
