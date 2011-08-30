@@ -21,6 +21,7 @@ public class Computer implements IServerCom {
 	private MainGUI mg;
 	private ServerCom sc;
 	private FlockHandler fh;
+	private int port = 4242;
 	
 	
 	//! Constructor
@@ -49,7 +50,7 @@ public class Computer implements IServerCom {
 	//--------
 	public void restartServer()
 	{
-		setSc(new ServerCom(4242, this));
+		setSc(new ServerCom(port, this));
 	}
 	
 	
