@@ -7,9 +7,7 @@
 	<classpathentry kind="lib" path="C:/Program Files/leJOS NXJ/lib/jtools.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/leJOS NXJ/lib/pctools.jar"/>
 	<classpathentry kind="lib" path="C:/aplu5.jar"/>
-	<classpathentry kind="lib" path="C:/jaw.jar"/>
 	<classpathentry kind="lib" path="C:/XboxController.jar"/>
-	<classpathentry kind="lib" path="C:/jinput.jar"/>
-	<classpathentry kind="lib" path="C:/jinput-test.jar"/>
+	<classpathentry kind="lib" path="C:/jaw.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
