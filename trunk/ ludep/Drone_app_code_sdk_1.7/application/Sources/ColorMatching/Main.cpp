@@ -1,3 +1,10 @@
+/**
+ * Main to test ColorMatcher with a usb webcam
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
+ */
+
 #include <stdio.h>// includes C standard input/output definitions'
 #include <stdlib.h>
 #include <iostream>

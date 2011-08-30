@@ -1,8 +1,8 @@
-/*
- * ColorMatcher.hpp
- *
- *  Created on: August 3, 2011
- *      Author: Michael
+/**
+ * ColorMatcher : image Analysis with OpenCV
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
  */
 
 #include "client.hpp"
