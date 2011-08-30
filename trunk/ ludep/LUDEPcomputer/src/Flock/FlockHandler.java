@@ -168,14 +168,11 @@ public class FlockHandler extends Thread{
 			if(movementPossible(b, p))
 			{
 				b.setGoToPostion(p);
-				//System.out.println("Brick ID " + b.getId() + " GOGO");
 				return;
 			}
 			else
 			{
-				//System.out.println("Brick ID " + b.getId() + " RETRY...");
-				p.translate((-p.x+b.getPosition().x)/3,
-						(-p.y+b.getPosition().y)/3);
+				p.translate((-p.x+b.getPosition().x)/3, (-p.y+b.getPosition().y)/3);
 			}
 		}
 	}
