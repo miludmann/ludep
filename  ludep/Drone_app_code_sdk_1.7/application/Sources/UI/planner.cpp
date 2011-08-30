@@ -1,9 +1,10 @@
-/******************************
- * Flight Planner Skeleton
- * Cooper Bills (csb88@cornell.edu)
- * Cornell University
- * 1/4/11
- ******************************/
+/**
+ * Drone Planner
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
+ * Inspired by a skeleton from Cooper Bills (Cornell University)
+ **/
 #define cvAlgWindow "AlgorithmView"
 #define cvBotAlgWindow "BottomAlgorithmView"
 
@@ -132,21 +133,21 @@ void *Planner_Thread(void *params)
     double time_lost = 0;
 
     // Altitude PID
-    const double alt_Kp = 15, alt_Ki = 2, alt_Kd = 0, ALT_OFFSET = 1800, ALTp = 0;
+    const double alt_Kp = 13, alt_Ki = 2, alt_Kd = 0, ALT_OFFSET = 1700, ALTp = 0;
     int alt_error = 0, alt_integral = 0, alt_lasterror = 0, alt_derivative = 0;
     double altitudeMove;
 
     // Tracking PID
-    self->kp = 3, self->ki = 0, self->kd = 10;
+    self->kp = 3.66/1, self->ki = 1.52/2, self->kd = 10/2;
     
     int radiusError = 0, radiusIntegral = 0, radiusLastError = 0, radiusDerivative = 0;
     double radiusMove = 0;
-    double dampen = 2/3;
+    double dampen = 1;
 
     self->dpitch = 0; // No forward motion
     self->droll = 0; // No side-to-side motion
     self->dyaw = 0; // No turning motion
-    self->dgaz = ALTITUDE - 1600; // Adjust altitude by difference from goal.
+    self->dgaz = ALTITUDE - 1700; // Adjust altitude by difference from goal.
     self->hover = 0;
 
     // Saving PID data for latter plotting
@@ -288,7 +289,16 @@ void *Planner_Thread(void *params)
 					
 					//ardrone_at_set_led_animation(BLINK_ORANGE, 10, (float) 0.01);
                 }
-            } else {
+            }
+            else
+            {
+            	self->hover=1;
+            	self->dpitch = 0;
+            	self->droll = 0;
+            }
+            /*
+            else 
+            {
                 final = clock() - init;
                 time_lost = (double)final / ((double)TICKS_PER_SEC);
                 //printf("Target lost for %f seconds\n", time_lost);
@@ -301,6 +311,7 @@ void *Planner_Thread(void *params)
                 }
                 cout << "Hovering" << endl;
             }
+            */
 
             //******** Edit Above this Line **********
 

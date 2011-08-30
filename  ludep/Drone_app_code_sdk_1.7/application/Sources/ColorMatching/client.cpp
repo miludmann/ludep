@@ -1,3 +1,10 @@
+/**
+ * Client for socket communication
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

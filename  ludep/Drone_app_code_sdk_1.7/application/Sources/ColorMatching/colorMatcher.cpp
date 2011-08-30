@@ -1,16 +1,17 @@
+/**
+ * ColorMatcher : image Analysis with OpenCV
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
 #include <string>
-//#include <sys/socket.h>
-//#include <sys/types.h>
-//#include <netinet/in.h>
-//#include <netdb.h>
 #include <deque>
 #include <opencv/cv.h> // includes OpenCV definitions
-//#include <highgui.h> // includes highGUI definitions
 #include <iostream>
 #include <sstream>
 #include <math.h>
@@ -499,9 +500,6 @@ void ColorMatcher::setDefaultValues()
 {
 	// configure client/server 
 	PORTNO = 4242;
-	//string ipHost_str ("10.11.106.251");
-	//string ipHost_str ("127.0.0.1");
-	//IPHOST = ipHost_str.c_str();
 	IPHOST = "10.11.106.251";
 	//IPHOST = "10.11.110.230";
 	CONNECTION = 0; //Socket connection switch
@@ -558,9 +556,9 @@ void ColorMatcher::addDefaultRobotSet()
 	
 	//Office Values
 	addRobot(0, 0, 141, 137, 138, 255);		//red
-	addRobot(165, 0, 0, 255, 255, 145); 	//blue
-	addRobot(0, 143, 0, 132, 255, 144); 	//dark green
-	addRobot(0, 146, 175, 145, 255, 255); 	//yellow
+	addRobot(165, 0, 0, 255, 193, 125); 	//blue
+	addRobot(0, 147, 0, 153, 255, 132); 	//dark green
+	addRobot(0, 146, 168, 155, 255, 255); 	//yellow
 	
 	//LEGOLAB Values
 	//addRobot(0, 0, 141, 137, 138, 255);		//red

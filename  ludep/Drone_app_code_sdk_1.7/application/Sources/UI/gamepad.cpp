@@ -4,6 +4,7 @@
  *  \version  1.0
  *  \date     04/06/2007
  *  \warning  Subject to completion
+ *  \note     Largely modified by Michaël Ludmann (michael@ludep.com)
  */
 
 
@@ -109,6 +110,7 @@ extern "C" {
     * gaz :  altitude (mm/s) (-25000, +25000)
     * yaw : z-axis (rad/s) (-25000, +25000)
     */
+    
       //Make sure commands are in range
       if(x < -25000) x = -25000;
       if(x > 25000) x = 25000;
@@ -119,10 +121,10 @@ extern "C" {
       if(yaw < -25000) yaw = -25000;
       if(yaw > 25000) yaw = 25000;
       ardrone_at_set_progress_cmd( enable,
-                                   x/25000.0,
-                                   y/25000.0,
-                                   -z/25000.0,
-                                   yaw/25000.0);
+                                   (x/25000.0)/5,
+                                   (y/25000.0)/5,
+                                   (-z/25000.0)/1.3,
+                                   (yaw/25000.0)/2);
       //ardrone_at_set_radiogp_input(y, x, z, yaw); old command
       //PRINT("Pitch:%3d Roll:%3d Gaz:%3d Yaw:%3d\n", y, x, z, yaw);
       lastx = x;
@@ -310,6 +312,7 @@ C_RESULT update_gamepad(void)
         case 0 : //A-button enables/disables algorithms
           if(js_e_buffer[idx].value == 1 && planner != NULL)
           {
+          	planner->hover = 0;
           	planner->enabled = planner->enabled ? FALSE : TRUE;
             if(planner->enabled) PRINT("Algorithms Enabled.\n"); else PRINT("Algorithms Disabled.\n");
             ardrone_at_set_progress_cmdC(1, 0, 0, 0, 0); //reset
@@ -346,11 +349,11 @@ C_RESULT update_gamepad(void)
             PRINT("Decrease PID parameter... ");
             switch(currentParam){
             case KP:
-            	planner->kp <= 0 ? planner->kp = 0: planner->kp = planner->kp - 0.2;
+            	planner->kp <= 0 ? planner->kp = 0: planner->kp = planner->kp - 0.1;
             	PRINT("now Kp = %-.1f\n", planner->kp);
             	break;
             case KI:
-            	planner->ki <= 0.1 ? planner->ki = 0: planner->ki = planner->ki - 0.5;
+            	planner->ki <= 0.1 ? planner->ki = 0: planner->ki = planner->ki - 0.1;
             	PRINT("now Ki= %-.1f\n", planner->ki);
             	break;
             case KD:
@@ -377,11 +380,11 @@ C_RESULT update_gamepad(void)
             PRINT("Increase PID parameter... ");
 			switch(currentParam){
             case KP:
-            	planner->kp = planner->kp + 0.2;
+            	planner->kp = planner->kp + 0.1;
             	PRINT("now Kp = %-.1f\n", planner->kp);
             	break;
             case KI:
-            	planner->ki = planner->ki + 0.5;
+            	planner->ki = planner->ki + 0.1;
             	PRINT("now Ki= %-.1f\n", planner->ki);
             	break;
             case KD:

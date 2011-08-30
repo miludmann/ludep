@@ -1,3 +1,10 @@
+/**
+ * Client for socket communication
+ * Michaël Ludmann (michael@ludep.com)
+ * Aarhus University
+ * 30/08/11
+ */
+
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 

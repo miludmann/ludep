@@ -3,15 +3,17 @@
 #include <string.h>
 #include <string>
 
-#include "client.hpp"
+#include "../client.hpp"
 
 
 Client *client;
 
+// Simple main to test the Client class (launch the server first)
+// To compile it: g++ -o Client client.c ../client.hpp ../client.cpp -lpthread
 int main(int argc, char *argv[])
 {
 	int portno = 4242;
-	char* iphost = "10.11.88.168";
+	char* iphost = "127.0.0.1";
 	
 	if (argc < 3) {
 		fprintf(stderr,"Default parameters: host = %s:%d\n", iphost, portno);
@@ -23,6 +25,8 @@ int main(int argc, char *argv[])
 	if(client == NULL) client = new Client(iphost, portno);
 	
 	char buffer[256];
+	
+	// Send one test string to the server
 	strcpy(buffer, "BOOOOM");
 	client->SendMessage(buffer);
 	
