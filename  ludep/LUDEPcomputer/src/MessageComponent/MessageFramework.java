@@ -24,15 +24,15 @@ public class MessageFramework {
 	private ArrayList<Byte> m_receivedBytes;
 
 	public MessageFramework() {
-
+		
 		m_messageListener = null;
 		m_receivedBytes = new ArrayList<Byte>();
 		m_RXguard = new Object();
-
+		
 		m_connecter = new NXTConnector();
 		m_connected = false;
 		
-		m_reader = new Reader(); 
+		m_reader = new Reader();
 		m_reader.setDaemon(true);
 	}
 
@@ -41,25 +41,25 @@ public class MessageFramework {
 		if ( m_connected ) return true;
 		
 		setM_connected(m_connecter.connectTo(info.name, info.deviceAddress, NXTCommFactory.BLUETOOTH));
-
+		
 		if (!m_connected) return false;
-
+		
 		m_is = m_connecter.getInputStream();
 		m_os = m_connecter.getOutputStream();
-
+		
 		if (m_is == null || m_os == null)
 		{
 			setM_connected(false);
 		}
-
+		
 		if (!m_connected) return false; 
-
+		
 		try{
 			m_reader.start(); //Start to listen for incoming messages
 		} catch ( IllegalThreadStateException e ) {
 			e.printStackTrace();
 		}
-
+		
 		return m_connected;
 	}
 
@@ -75,7 +75,7 @@ public class MessageFramework {
 		} catch (IOException e) {
 			e.printStackTrace();
 			close();
-		}		
+		}
 	}
 
 	public void setMessageListener(MessageListenerInterface msgListener)
@@ -90,7 +90,7 @@ public class MessageFramework {
 			while (m_connected)
 			{
 				try {
-
+					
 					byte input;
 					//TODO: We should address the blocking issue.
 					while ((input = (byte)m_is.read()) >= 0)
