@@ -77,7 +77,6 @@ void *ClientWriter_Thread(void *params)
 void Client::SendMessage(char* msg)
 {
     int n;
-
 	n = write(sockfd, msg, strlen(msg));
 	if (n < 0) 
 		 error("ERROR writing to socket");
