@@ -1,0 +1,140 @@
+===============================================================================
+This is an adapted version of Cooper's Instructions <csb88@cornell.edu>
+Edited by M. Ludmann <michael@ludep.com>
+30/08/2011
+===============================================================================
+
+*Note: this file is a quick start and contains nearly everything you
+ need to know crammed into a page or two.  Read it carefully. 
+
+Overview:
+  Project tested with Linux Ubuntu 11.04 Natty Narwhal (and also previously with Ubuntu 10).
+
+  For most applications, only the planner.cpp file needs to be edited.
+
+  The Parrot AR.Drone is a quadrotor with on-board controller.  It was
+  originally designed to be controlled using the accelerometers in an
+  iPhone (see http://ardrone.parrot.com/ for details).  It uses a wifi
+  ad-hoc connection to communicate with the iPhone, or in our case a
+  computer.  So, you must have your computer's wifi connected to the
+  drone before running the program.
+  
+  Since firmware 1.7.4 and API 1.8, the AR.Drone uses Access Point mode
+  (in order to support the future Android app and bring some improvements
+  in connection management)
+  
+  It is here advised to rather use firmware 1.5.1 which was the one used
+  during development (and API 1.6 or later)  
+  
+Quick Tips/Descriptions:
+  ./ARDrone_API - the API for the ARDrone
+  ./application - our application/code, derived from their linux example
+  ./application/Build - where to build/run our application
+  ./application/Sources - our source code
+  http://projects.ardrone.org - support/documentation website
+  
+On ubuntu, the command 'sudo apt-get install g++ libsdl-dev libfftw3-dev libiw-dev libhighgui-dev'
+should install everything you need for dependencies (including opencv!).
+  
+To Build:
+  1. Navigate to ./application/Build in a terminal
+  2. run the command 'make'
+  3. the last command displayed starts with 'cp' if all goes well.
+  
+  Undefined reference to _main or cannot find -lpc_ardrone?
+    Navigate to ./ARDrone_API/ARDroneLib/Soft/Build and run 'make'
+  
+To Run:
+  1. Connect your wifi to ardrone_###### (drone must be on).
+  2. Once connected, in the Build directory, run './linux_sdk_demo'
+  
+To Use: 
+  Currently, it is only configured to work with the joystick/360
+  gamepad.  See ./Documentation/x360_controller_drone.png for control
+  configuration.
+  
+  'Start/Stop custom algorithm' switches between manual flight and computer 
+  controlled flight (coded in ./application/Sources/UI/planner.cpp).
+
+  The Graphical User Interface (GUI) is all about managing the configuration 
+  for image analysis, and real-time tuning. It is possible to start or stop 
+  the IO communication by socket (activated by default on port 4242, on 
+  localhost -> this can be changed in ./application/Sources/ColorMatching/ColorMatcher.cpp) 
+  on the GUI.
+
+To add new source files to make:
+  1. Open 'Makefile'
+  2. add your source to the list under 'GENERIC_BINARIES_COMMON_SOURCE_FILES'
+  3. headers do not need to be added to the makefile.
+  
+Known Dependencies (there might be more):
+  libhighgui-dev
+  g++
+  libsdl-dev
+  libfftw3-dev
+  libiw-dev
+  
+Adding libraries/dependencies:
+  1. Open 'Makefile'
+  2. add your library to 'GENERIC_LIBS', with -l prefix.
+  
+Missing a dependency?
+  1. open System->Administration->Synaptic Package Manager
+  2. Search for the dependency
+      Note: install the 'dev' version of the libraries.  
+      i.e. for opencv/highgui: 'libhighgui-dev' is the desired package
+  3. Right-click -> Mark for installation.
+  4. Click apply on the top.
+  5. Watch Ubuntu Download and handle the dirty work.
+  6. Try compiling again.
+  
+Further problems with make or at execution?
+  In the directory where you want to build your project:
+  1.	run ‘make clean’
+  2.	run ‘make’ once more
+  
+USB Webcam-only mode
+  It is possible to test the color detection alone, while still being able 
+  to send data to a server, by using a USB webcam without even connecting to the drone. 
+  To achieve that:
+  1.	Navigate to ./application/Sources/ColorMatching in a terminal
+  2.	run the command 'make'
+  3.	if all goes well, the last command printed in the terminal 
+        should start with ‘g++ -g –o ColorMatcher…’
+  4.	in the same current directory, run ‘./ColorMatcher’ 
+	(default webcam used will be the one plugged on /video0)
+
+Communicating with a server is still possible.
+
+Starting a local fake server
+  To get all the messages sent by the detection algorithm to the server,
+  it is possible to simulate it by running a local server that listens 
+  to messages on the same port (default: 4242). In order to do that:
+  1.	Navigate to ./application/Sources/ColorMatching/TestTools in a terminal
+  2.	run the command 'make'
+  3.	if all goes well, the last command printed in the terminal should be 
+	‘g++ -g –o Server server.o –pthread’
+  4.	in the same current directory, run ‘./Server’ 
+  5.	Messages received will directly be printed in the current terminal
+
+You may also want to test the client/server connection only. To do that:
+  1.	Follow the previous instructions and start the server
+  2.	In the same directory, run ‘./Client’
+  3.	The client will just send one test message to the server
+
+Changing the IP of the server
+  When the whole program is launched, or at least the image color detection, 
+  the GUI has a slider to toggle the connection to a remote server. 
+  This IP is hardcoded, and has to be changed in the code itself before building the program:
+  1.	Navigate to ./application/Sources/ColorMatching/
+  2.	Open ColorMatcher.cpp with a text editor
+  3.	Find the method ‘void ColorMatcher::setDefaultValues()’ in the end of the file
+  4.	Change the value of IPHOST to the IP where your server is running 
+	(if it is on the same machine, enter ‘IPHOST = 127.0.0.1’)
+  5.	Run make again in the same directory
+  
+Any more questions? 
+  Check the our website for more (www.ludep.com, with a full report in our
+  "Links & downloads" page),
+  otherwise feel free to e-mail us: michael@ludep.com
+
